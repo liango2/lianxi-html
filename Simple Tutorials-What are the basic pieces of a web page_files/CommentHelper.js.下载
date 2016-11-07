@@ -1,0 +1,251 @@
+
+
+function CommentHelper() { }
+
+CommentHelper.prototype = new UserContent;
+CommentHelper.prototype.superclass = UserContent.prototype;
+
+CommentHelper.prototype.GetContentType = function() {
+    return ContentHelper.ContentTypes.Comment;
+};
+
+CommentHelper.prototype.OnPublish = function() {
+    this.SaveContent(); //save and auto-publish
+};
+
+CommentHelper.prototype.GetCommentParentId = function() {
+    return $('#contentData').attr('data-id');
+}
+
+CommentHelper.prototype.GetCommentElements = function() {
+    var elements = [];
+
+    var editableElements = $('#addContentContainer').find('.editableElement');
+    for(var i=0; i < editableElements.length; i++) {
+        var guid = $(editableElements[i]).attr('guid');
+
+        if(!guid) {
+            alert('Sorry, an error has occurred. GUID is not defined.');
+        }
+
+        if(!this.elements[guid]) {
+            alert('Sorry, an error has occurred. An element with GUID {0} was not found.'.format(guid));
+        }
+
+        elements.push(this.elements[guid].data);
+    }
+    return elements;
+}
+
+CommentHelper.prototype.SaveContent = function() {
+    var elements = this.GetCommentElements();
+
+    if(elements.length == 0) {
+        alert('Please enter a comment to post.');
+        return;
+    }
+
+    var requestData = {
+        parentId: this.GetCommentParentId(),
+        firstRevision: this.firstRevision,
+        previousRevision: this.contentId,
+        jsonContent: JSON.stringify(elements),
+        title: elements[0].title
+    };
+
+    var logged_in_user = $('#menu_logout').attr('data-user-id');
+
+    var self = this;
+    var onSuccess = function(response) {
+        self.OnSubmitSuccess(response);
+    }
+
+    if(logged_in_user) {
+        SendRequest('/ManageContent/SaveComment', requestData, onSuccess, 0);
+    } else {
+        this.OpenSpamDialog();
+    }
+}
+
+CommentHelper.prototype.OnSubmitSuccess = function(response) {
+    if(!response.success) {
+        alert('Sorry, an error has occurred. Please try submitting again.')
+        return;
+    }
+
+    this.CloseSpamDialog();
+
+    this.contentId = response.contentId;
+    this.firstRevision = response.firstRevision;
+    this.previousRevision = response.previousRevision;
+    ui$(this.selectors.doneEditingModal).dialog('close');
+
+    this.OnContentSaved();
+}
+
+CommentHelper.prototype.OpenSpamDialog = function() {
+    ui$(this.selectors.spamDialog).dialog('open');
+}
+
+CommentHelper.prototype.CloseSpamDialog = function() {
+    ui$(this.selectors.spamDialog).dialog('close');
+}
+
+CommentHelper.prototype.CloseDialogs = function() {
+    ui$(this.selectors.emailDialog).dialog('close');
+    ui$(this.selectors.newUserPasswordDialog).dialog('close');
+    ui$(this.selectors.passwordDialog).dialog('close');
+}
+
+CommentHelper.prototype.OnContentSaved = function() {
+    $('#addContentFooter').hide();
+    $('#commentSuccess').show();
+}
+
+CommentHelper.prototype.SetupToolbarHandlers = function() {
+    var self = this;
+
+    var addButtons = $('.contentAddButton');
+
+    for(var i=0; i < addButtons.length-1; i++) {
+        var $button = $(addButtons[i]);
+        $button.attr('data-next-button', $(addButtons[i+1]).attr('id'));
+    }
+
+    $(addButtons).on('mouseover', function() {
+        var nextId = $(this).attr('data-next-button');
+        $('#' + nextId).addClass('contentAddButtonLeftBorderHover');
+    }).on('mouseout', function() {
+        var nextId = $(this).attr('data-next-button');
+        $('#' + nextId).removeClass('contentAddButtonLeftBorderHover');
+    });
+
+    $("#contentCheckboxText").button({
+        icons: {
+            primary:'ui-icon-comment'
+        }
+    }).on('click', function() {
+        self.ShowEditorForElement('text');
+    });
+
+    $("#contentCheckboxCode").button({
+        icons: {
+            primary:'ui-icon-carat-2-e-w'
+        }
+    }).on('click', function() {
+        self.ShowEditorForElement('code');
+    });
+
+    $("#contentCheckboxHeader").button({
+        icons: {
+            primary:'ui-icon-st-header'
+        }
+    }).on('click', function() {
+        self.ShowEditorForElement('header');
+    });
+
+    this.SetupEditing();
+    this.SetupEditMode();
+    this.SetupSorting();
+    this.SetupEditMask();
+}
+
+CommentHelper.prototype.RenderUserInterface = function() {
+    this.SetupEmailDialog();
+    $(this.selectors.addContentFooter).append(HtmlBlocks.CommentButtonArea);
+
+    var self = this;
+    $("#commentButton").button({
+        icons: {
+            primary:'ui-icon-comment-blue-bubble'
+        }
+    }).on('click', function() {
+        self.ShowCommentEditor();
+    });
+};
+
+CommentHelper.prototype.SetupEmailDialog = function() {
+    this.id = generateGuid();
+    this.AddSelectors({
+        spamDialog: '#st-comment-spam-dialog'
+    }, this.id);
+
+    var dialogsHtml = HtmlTemplate(HtmlBlocks.commentSpamDialog, {id: this.id});
+    $('#addContentFooter').append(dialogsHtml);
+
+    var self = this;
+    ui$(this.selectors.spamDialog).dialog({
+        width:590,
+        buttons: [
+            {
+                click: function () {
+                    self.SubmitComment();
+                },
+                text: 'Submit'
+            }
+        ],
+        autoOpen:false,
+        modal:true,
+        resizeable:false
+    });
+
+    var spamQuestion = $('#spam-data').attr('data-spam-question');
+    $('#spam_question' + this.id).html(spamQuestion +'<span class="subtle" style="margin-left: 10px;">(spam prevention)</span>');
+}
+
+CommentHelper.prototype.SubmitComment = function() {
+    if(!$('#agreeToTerms' + this.id).prop('checked')) {
+        alert('You must agree to the terms of service to comment. Otherwise, you may close the dialog to cancel.');
+        return;
+    }
+
+    var $spamData = $('#spam-data');
+    var elements = this.GetCommentElements();
+    var requestData = {
+        parentId: this.GetCommentParentId(),
+        firstRevision: this.firstRevision,
+        previousRevision: this.contentId,
+        jsonContent: JSON.stringify(elements),
+        title: elements[0].title,
+        ts: $spamData.attr('data-spam-ts'),
+        answer: $('#spam_answer' + this.id).val(),
+        iv: $spamData.attr('data-spam-iv')
+    };
+
+    var self = this;
+    var onSuccess = function(response) {
+        self.OnSubmitSuccess(response);
+    };
+
+    SendRequest('/Home/SaveComment', requestData, onSuccess, 0);
+}
+
+CommentHelper.prototype.ShowCommentEditor = function() {
+    $('#commentButtonContainer').hide();
+
+    var uiData = {
+        edit_mode_buttons: HtmlBlocks.CommentEditModeButtons,
+        save_exit_buttons: HtmlBlocks.CommentSaveButton
+    };
+
+    var html = HtmlTemplate(HtmlBlocks.CommentToolbar, uiData);
+
+    $(this.selectors.addContentFooter).append(html);
+    $(this.selectors.addContentFooter).append(HtmlBlocks.EditPageMask + HtmlBlocks.EditPageMaskButtons);
+
+    this.SetupToolbarHandlers();
+
+    var self = this;
+    $('#commentHint').show().on('click', function() {
+        self.ShowEditorForElement('text');
+    });
+    setTimeout(function() {
+        $('#commentHint').fadeOut({duration: 4000});
+    }, 1000);
+
+    //}
+    //$('#addContentContainer').addClass('addContentContainerDashBox');
+    $('#contentDashBox').addClass('contentDashBox');
+
+    //$('#contentDashBox').show();
+}

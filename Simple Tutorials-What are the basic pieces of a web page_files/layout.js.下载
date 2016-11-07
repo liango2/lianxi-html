@@ -1,0 +1,19 @@
+
+$(document).ready(function() {
+    var onSearch = function() {
+        var url = '/Home/Content?p=1&q=' + encodeURIComponent($('#searchTitles').val());
+        location.href = url;
+    };
+
+    $('#searchTitlesButton').on('click', function() {
+        onSearch();
+        return false;
+    });
+
+    $('#searchTitles').on('keypress', function (e) {
+        if (e.which == 13) {
+            onSearch();
+            return false;
+        }
+    });
+});

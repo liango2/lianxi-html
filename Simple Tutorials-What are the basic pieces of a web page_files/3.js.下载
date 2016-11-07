@@ -1,0 +1,2601 @@
+(function(e) {
+    e.hotkeys = {
+        version: "0.8",
+        specialKeys: {
+            8: "backspace",
+            9: "tab",
+            10: "return",
+            13: "return",
+            16: "shift",
+            17: "ctrl",
+            18: "alt",
+            19: "pause",
+            20: "capslock",
+            27: "esc",
+            32: "space",
+            33: "pageup",
+            34: "pagedown",
+            35: "end",
+            36: "home",
+            37: "left",
+            38: "up",
+            39: "right",
+            40: "down",
+            45: "insert",
+            46: "del",
+            59: ";",
+            61: "=",
+            96: "0",
+            97: "1",
+            98: "2",
+            99: "3",
+            100: "4",
+            101: "5",
+            102: "6",
+            103: "7",
+            104: "8",
+            105: "9",
+            106: "*",
+            107: "+",
+            109: "-",
+            110: ".",
+            111: "/",
+            112: "f1",
+            113: "f2",
+            114: "f3",
+            115: "f4",
+            116: "f5",
+            117: "f6",
+            118: "f7",
+            119: "f8",
+            120: "f9",
+            121: "f10",
+            122: "f11",
+            123: "f12",
+            144: "numlock",
+            145: "scroll",
+            173: "-",
+            186: ";",
+            187: "=",
+            188: ",",
+            189: "-",
+            190: ".",
+            191: "/",
+            192: "`",
+            219: "[",
+            220: "\\",
+            221: "]",
+            222: "'"
+        },
+        shiftNums: {
+            "`": "~",
+            "1": "!",
+            "2": "@",
+            "3": "#",
+            "4": "$",
+            "5": "%",
+            "6": "^",
+            "7": "&",
+            "8": "*",
+            "9": "(",
+            "0": ")",
+            "-": "_",
+            "=": "+",
+            ";": ": ",
+            "'": '"',
+            ",": "<",
+            ".": ">",
+            "/": "?",
+            "\\": "|"
+        }
+    };
+    function t(t) {
+        if (typeof t.data === "string") {
+            t.data = {
+                keys: t.data
+            };
+        }
+        if (!t.data || !t.data.keys || typeof t.data.keys !== "string") {
+            return;
+        }
+        var i = t.handler, a = t.data.keys.toLowerCase().split(" "), n = [ "text", "password", "number", "email", "url", "range", "date", "month", "week", "time", "datetime", "datetime-local", "search", "color", "tel" ];
+        t.handler = function(t) {
+            if (this !== t.target && (/textarea|select/i.test(t.target.nodeName) || e.inArray(t.target.type, n) > -1)) {
+                return;
+            }
+            var o = e.hotkeys.specialKeys[t.keyCode], s = String.fromCharCode(t.which).toLowerCase(), r = "", l = {};
+            e.each([ "alt", "ctrl", "meta", "shift" ], function(e, i) {
+                if (t[i + "Key"] && o !== i) {
+                    r += i + "+";
+                }
+            });
+            r = r.replace("alt+ctrl+meta+shift", "hyper");
+            if (o) {
+                l[r + o] = true;
+            }
+            if (s) {
+                l[r + s] = true;
+                l[r + e.hotkeys.shiftNums[s]] = true;
+                if (r === "shift+") {
+                    l[e.hotkeys.shiftNums[s]] = true;
+                }
+            }
+            for (var d = 0, u = a.length; d < u; d++) {
+                if (l[a[d]]) {
+                    return i.apply(this, arguments);
+                }
+            }
+        };
+    }
+    e.each([ "keydown", "keyup", "keypress" ], function() {
+        e.event.special[this] = {
+            add: t
+        };
+    });
+})(this.jQuery);
+
+(function(e) {
+    e.extend(e.fn, {
+        livequery: function(t, i, a) {
+            var n = this, o;
+            if (e.isFunction(t)) a = i, i = t, t = undefined;
+            e.each(e.livequery.queries, function(e, s) {
+                if (n.selector == s.selector && n.context == s.context && t == s.type && (!i || i.$lqguid == s.fn.$lqguid) && (!a || a.$lqguid == s.fn2.$lqguid)) return (o = s) && false;
+            });
+            o = o || new e.livequery(this.selector, this.context, t, i, a);
+            o.stopped = false;
+            o.run();
+            return this;
+        },
+        expire: function(t, i, a) {
+            var n = this;
+            if (e.isFunction(t)) a = i, i = t, t = undefined;
+            e.each(e.livequery.queries, function(o, s) {
+                if (n.selector == s.selector && n.context == s.context && (!t || t == s.type) && (!i || i.$lqguid == s.fn.$lqguid) && (!a || a.$lqguid == s.fn2.$lqguid) && !this.stopped) e.livequery.stop(s.id);
+            });
+            return this;
+        }
+    });
+    e.livequery = function(t, i, a, n, o) {
+        this.selector = t;
+        this.context = i;
+        this.type = a;
+        this.fn = n;
+        this.fn2 = o;
+        this.elements = [];
+        this.stopped = false;
+        this.id = e.livequery.queries.push(this) - 1;
+        n.$lqguid = n.$lqguid || e.livequery.guid++;
+        if (o) o.$lqguid = o.$lqguid || e.livequery.guid++;
+        return this;
+    };
+    e.livequery.prototype = {
+        stop: function() {
+            var e = this;
+            if (this.type) this.elements.unbind(this.type, this.fn); else if (this.fn2) this.elements.each(function(t, i) {
+                e.fn2.apply(i);
+            });
+            this.elements = [];
+            this.stopped = true;
+        },
+        run: function() {
+            if (this.stopped) return;
+            var t = this;
+            var i = this.elements, a = e(this.selector, this.context), n = a.not(i);
+            this.elements = a;
+            if (this.type) {
+                n.bind(this.type, this.fn);
+                if (i.length > 0) e.each(i, function(i, n) {
+                    if (e.inArray(n, a) < 0) e.event.remove(n, t.type, t.fn);
+                });
+            } else {
+                n.each(function() {
+                    t.fn.apply(this);
+                });
+                if (this.fn2 && i.length > 0) e.each(i, function(i, n) {
+                    if (e.inArray(n, a) < 0) t.fn2.apply(n);
+                });
+            }
+        }
+    };
+    e.extend(e.livequery, {
+        guid: 0,
+        queries: [],
+        queue: [],
+        running: false,
+        timeout: null,
+        checkQueue: function() {
+            if (e.livequery.running && e.livequery.queue.length) {
+                var t = e.livequery.queue.length;
+                while (t--) e.livequery.queries[e.livequery.queue.shift()].run();
+            }
+        },
+        pause: function() {
+            e.livequery.running = false;
+        },
+        play: function() {
+            e.livequery.running = true;
+            e.livequery.run();
+        },
+        registerPlugin: function() {
+            e.each(arguments, function(t, i) {
+                if (!e.fn[i]) return;
+                var a = e.fn[i];
+                e.fn[i] = function() {
+                    var t = a.apply(this, arguments);
+                    e.livequery.run();
+                    return t;
+                };
+            });
+        },
+        run: function(t) {
+            if (t != undefined) {
+                if (e.inArray(t, e.livequery.queue) < 0) e.livequery.queue.push(t);
+            } else e.each(e.livequery.queries, function(t) {
+                if (e.inArray(t, e.livequery.queue) < 0) e.livequery.queue.push(t);
+            });
+            if (e.livequery.timeout) clearTimeout(e.livequery.timeout);
+            e.livequery.timeout = setTimeout(e.livequery.checkQueue, 20);
+        },
+        stop: function(t) {
+            if (t != undefined) e.livequery.queries[t].stop(); else e.each(e.livequery.queries, function(t) {
+                e.livequery.queries[t].stop();
+            });
+        }
+    });
+    e.livequery.registerPlugin("append", "prepend", "after", "before", "wrap", "attr", "removeAttr", "addClass", "removeClass", "toggleClass", "empty", "remove", "html");
+    e(function() {
+        e.livequery.play();
+    });
+})(jQuery);
+
+function UploadHelper() {}
+
+UploadHelper.prototype.GetCurrentUploadQuota = function() {
+    $.ajax({
+        url: "/ManageContent/GetCurrentUploadQuota",
+        contentType: "application/json",
+        dataType: "json",
+        error: function() {
+            $("#bodytd").unmask();
+            alert("Sorry, a system error has occurred. Please try again later.");
+        },
+        success: function(e) {
+            $("#bodytd").unmask();
+            if (e.success == false) {
+                alert("Sorry, a system error has occurred. Please try again later.");
+                return;
+            }
+            self.uploadLimit = e.uploadLimit;
+        },
+        type: "POST"
+    });
+};
+
+UploadHelper.prototype.OnFileUploadSubmit = function(e, t) {
+    if (this.contentId == null) {
+        alert("Content Id is null");
+    }
+    t.formData = {
+        contentId: this.contentId
+    };
+};
+
+var UserContent = function() {
+    var e = function() {};
+    e.ContentTypes = {
+        Tutorial: 1,
+        Comment: 2,
+        Survey: 3,
+        UserProfile: 4
+    };
+    e.ContentStatus = {
+        NotSubmittedForReview: 1,
+        Published: 2,
+        Denied: 3,
+        PendingApproval: 4,
+        PreviouslyPublished: 6
+    };
+    var t = e.prototype;
+    t.Init = function() {
+        this.elements = [];
+        this.InitContentHelper();
+    };
+    t.InitContentHelper = function() {
+        if (!this.contentType) {
+            this.contentType = e.ContentTypes.Tutorial;
+        }
+        this.selectors = {
+            advancedModal: "#advancedModal",
+            addButton: "#addButton",
+            addContentContainer: "#addContentContainer",
+            addContentFooter: "#addContentFooter",
+            addContentModal: "#addContentModal",
+            addModal: "#addModal",
+            enableEditing: "#contentModeRadioEdit",
+            enableSorting: "#contentModeRadioMove",
+            editableElementMask: "#editableElementMask",
+            editableElementMaskButtons: "#editableElementMaskButtons",
+            addElements: "#addElements",
+            publishButton: "#publishButton",
+            exitButton: "#exitButton",
+            publishModal: "#publishModal",
+            doneEditingModal: "#doneEditingModal",
+            modeContainer: "#contentModeButtonTable"
+        };
+        this.addContentOkButtonId = $(this.addContentModal).attr("id") + "_okButton";
+        this.addContentContainerClass = "addContentContainer";
+        this.contentId = null;
+        this.uploadLimit = 20971520;
+        this.editingElement = null;
+        this.elements = {};
+    };
+    t.GetContent = function(e) {
+        var t = {
+            contentId: e
+        };
+        var i = this;
+        var a = function(e) {
+            i.firstRevision = e.firstRevision;
+            i.previousRevision = e.previousRevision;
+            i.contentType = e.contentType;
+            i.contentId = e.contentId;
+            var t = JSON.parse(e.jsonContent);
+            var a = {};
+            a[EditableElement.TITLE] = EditableTitle;
+            a[EditableElement.HEADER] = EditableHeader;
+            a[EditableElement.CODE] = EditableCode;
+            a[EditableElement.TEXT] = EditableText;
+            a[EditableElement.IMAGE] = EditableImage;
+            a[EditableElement.ZIP] = EditableZip;
+            a[EditableElement.SURVEY] = EditableSurvey;
+            a[EditableElement.VIDEO] = EditableVideo;
+            a[EditableElement.LINKSERIES] = EditableLinkSeries;
+            i.elements = [];
+            for (var n = 0; n < t.length; n++) {
+                var o = new a[t[n].type]();
+                o.SetUserContent(i);
+                o.Init(t[n]);
+                o.Render(t[n]);
+                i.elements.push(o);
+            }
+        };
+        SendRequest("/ManageContent/GetContent", t, a, 0);
+    };
+    t.GetElementsToKeyValueMaps = function(e) {
+        var t = [ "id", "user_content_id", "element_type_id", "content", "date_created", "date_modified", "attrs" ];
+        var i = [];
+        for (var a = 0; a < e.length; a++) {
+            i[a] = {};
+            for (var n = 0; n < t.length; n++) {
+                i[a][t[n]] = e[a][n];
+            }
+        }
+        return i;
+    };
+    t.GetElementId = function(e) {
+        return e.replace("editableElement", "").replace("editableTitle", "");
+    };
+    t.GetEditableElementOrderIds = function() {
+        var e = [];
+        e.push.apply(e, $(".editableTitle"));
+        e.push.apply(e, $(".editableElement"));
+        var t = [];
+        for (var i = 0; i < e.length; i++) {
+            t.push(this.GetElementId($(e[i]).attr("id")));
+        }
+        return t;
+    };
+    t.GetEditableElementOrderIdsString = function() {
+        return this.GetEditableElementOrderIds().join(",");
+    };
+    t.AppendHtml = function(e) {
+        $(this.selectors.addContentContainer).append(e);
+    };
+    t.GetContentHtml = function() {
+        return $(this.selectors.addContentContainer).html();
+    };
+    t.GetContentId = function() {
+        return this.contentId;
+    };
+    t.SetContentId = function(e) {
+        this.contentId = e;
+    };
+    t.RenderUserInterface = function() {
+        var e = {
+            edit_mode_buttons: HtmlBlocks.EditModeButtons,
+            save_exit_buttons: HtmlBlocks.SaveExitButtons
+        };
+        var t = HtmlTemplate(HtmlBlocks.EditPageUserInterface, e);
+        $(this.selectors.addContentFooter).append(t);
+        $(this.selectors.addContentFooter).append(HtmlBlocks.EditPageMask + HtmlBlocks.EditPageMaskButtons);
+        var i = $(".contentAddButton");
+        for (var a = 0; a < i.length - 1; a++) {
+            var n = $(i[a]);
+            n.attr("data-next-button", $(i[a + 1]).attr("id"));
+        }
+        $(i).on("mouseover", function() {
+            var e = $(this).attr("data-next-button");
+            $("#" + e).addClass("contentAddButtonLeftBorderHover");
+        }).on("mouseout", function() {
+            var e = $(this).attr("data-next-button");
+            $("#" + e).removeClass("contentAddButtonLeftBorderHover");
+        });
+        var o = this;
+        $("#contentAddButtonTable button").on("click", function() {
+            var e = $($(this).attr("data-ee-target"));
+            e.modal("show");
+            o.ShowEditorForElement(e.attr("data-ee-type"), e[0]);
+        });
+        this.SetupEditMode();
+    };
+    t.AddSelectors = function(e, t) {
+        this.selectors = this.selectors || {};
+        _.each(e, function(i, a) {
+            if (this.selectors[a]) {
+                alert("Key {0} already exists in selectors map".format(a));
+            }
+            this.selectors[a] = e[a] + t;
+        }, this);
+    };
+    t.SetupEditMode = function() {
+        var e = this;
+        $(this.selectors.modeContainer + " button").on("click", function() {
+            switch (this.id) {
+              case "contentModeRadioEdit":
+                e.isEditMode = true;
+                e.isMoveMode = false;
+                e.DisableSorting();
+                break;
+
+              case "contentModeRadioMove":
+                e.isMoveMode = true;
+                e.isEditMode = false;
+                e.EnableSorting();
+                break;
+
+              default:
+                e.isMoveMode = false;
+                e.isEditMode = false;
+                e.DisableSorting();
+                break;
+            }
+        });
+        $(this.selectors.enableEditing).button({
+            icons: {
+                primary: "ui-icon-pencil"
+            }
+        });
+        $(this.selectors.enableSorting).button({
+            icons: {
+                primary: "ui-icon-arrow-2-n-s"
+            }
+        });
+        $("#contentModeRadioNone").button({});
+    };
+    t.DisableSorting = function() {
+        ui$(this.selectors.addContentContainer).sortable("option", "disabled", true);
+        $(".editableElement").removeClass("editableElementSort editableElementMove");
+    };
+    t.EnableSorting = function() {
+        $(".editableElement").each(function() {
+            $(this).data({
+                preWidth: $(this).width(),
+                preHeight: $(this).height()
+            });
+            $(this).addClass("editableElementMove");
+        });
+        $(".editableElement").addClass("editableElementSort");
+        ui$(this.selectors.addContentContainer).sortable({
+            stop: function(e, t) {
+                $(t.item).data("cancelClick", true);
+            }
+        });
+        ui$(this.selectors.addContentContainer).sortable("option", "disabled", false);
+    };
+    t.RenderAddTypeModal = function() {
+        $(this.selectors.addContentContainer).append(HtmlBlocks.EditPageAddModal);
+    };
+    t.RenderPublishModal = function() {
+        $(this.selectors.addContentContainer).append(HtmlBlocks.EditPagePublishModal);
+    };
+    t.RenderDoneEditingModal = function() {
+        $(this.selectors.addContentContainer).append(HtmlBlocks.EditPageDoneEditingModal);
+    };
+    t.SetupEditMask = function() {
+        var e = this;
+        var t = function(t) {
+            e.maskShowFlag = false;
+            setTimeout(function() {
+                if (!e.maskShowFlag) {
+                    $(e.selectors.editableElementMaskButtons).hide();
+                    $(e.selectors.editableElementMask).hide();
+                }
+            }, 1e3);
+        };
+        var i = function() {
+            e.maskShowFlag = true;
+        };
+        $(e.selectors.editableElementMask).on("mouseout", t).on("mouseover", i).on("click", function() {
+            var t = $(e.editingElement).data("elementInstance");
+            t.OpenDialog(false);
+        });
+        $(e.selectors.editableElementMaskButtons).on("click", function() {
+            $(e.selectors.editableElementMask).trigger("click");
+        }).on("mouseout", t).on("mouseover", i);
+        $(document).on("mouseover", ".editableElement", function() {
+            if (!e.isEditMode) {
+                return;
+            }
+            e.editingElement = this;
+            var t = $(this).position();
+            var i = $(this).outerWidth(true);
+            var a = $(this).outerHeight(true);
+            e.maskShowFlag = false;
+            $(e.selectors.editableElementMask).height(a).width(i).css({
+                top: t.top,
+                left: t.left
+            }).show();
+            var n = $(e.selectors.editableElementMask).position();
+            $(e.selectors.editableElementMaskButtons).show().css({
+                top: n.top,
+                right: t.right
+            }).width(i);
+        });
+        $(document).on("mouseout", ".editableElement", function() {});
+        $("#editElementMaskEditButton").button({
+            icons: {
+                primary: "ui-icon-document"
+            }
+        }).on("click", function() {
+            $(e.selectors.editableElementMask).trigger("click");
+            $(e.selectors.editableElementMaskButtons).hide();
+        });
+        $("#editElementMaskRemoveButton").button({
+            icons: {
+                primary: "ui-icon-trash"
+            }
+        }).on("click", function(t) {
+            $(e.selectors.editableElementMask).hide();
+            $(e.editingElement).remove();
+            t.stopPropagation();
+            $(e.selectors.editableElementMaskButtons).hide();
+        });
+    };
+    t.SetupSorting = function() {
+        var e = this;
+        $(document).on("mouseover", ".editableElement", function() {
+            if (!e.isMoveMode) {
+                return;
+            }
+            $(this).addClass("editableElementSortHover");
+            $(e.selectors.addContentContainer).find(".hideWrapper").contents().unwrap();
+            $(this).contents().wrapAll('<div style="display: none" class="hideWrapper"/>');
+            $(this).width($(this).data("preWidth"));
+        });
+        $(document).on("mouseout", ".editableElement", function() {
+            if (!e.isMoveMode) {
+                return;
+            }
+            $(this).removeClass("editableElementSortHover");
+            $(this).find(".hideWrapper:first").contents().unwrap();
+            $(this).find(".editElementMove").remove();
+        });
+        ui$(this.selectors.addContentContainer).sortable();
+        $("#contentModeRadioEdit").trigger("click");
+    };
+    t.GetContentType = function() {
+        return this.contentType;
+    };
+    t.SaveContent = function(e, t) {
+        var i = [];
+        var a = $(".editableTitle").first().attr("guid");
+        i.push(this.elements[a].data);
+        var n = $(".editableElement");
+        for (var o = 0; o < n.length; o++) {
+            a = $(n[o]).attr("guid");
+            if (!a) {
+                alert("Sorry, an error has occurred. GUID is not defined.");
+            }
+            if (!this.elements[a]) {
+                alert("Sorry, an error has occurred. An element with GUID {0} was not found.".format(a));
+            }
+            i.push(this.elements[a].data);
+        }
+        var s = {
+            firstRevision: this.firstRevision,
+            previousRevision: this.contentId,
+            jsonContent: JSON.stringify(i),
+            title: i[0].title,
+            publish: e == 2,
+            contentType: this.GetContentType()
+        };
+        var r = this;
+        var l = function(t) {
+            if (!t.success) {
+                alert("An error has occurred. Please try again later.");
+                return;
+            }
+            r.contentId = t.contentId;
+            r.firstRevision = t.firstRevision;
+            r.previousRevision = t.previousRevision;
+            ui$(r.selectors.doneEditingModal).dialog("close");
+            switch (e) {
+              case 1:
+              case 2:
+                location.href = "/User/Index";
+                break;
+
+              default:
+                break;
+            }
+        };
+        SendRequest("/ManageContent/Save", s, l, 0, {
+            hideMask: t
+        });
+    };
+    t.ShowEditorForElement = function(e, t) {
+        var i = new this.EditableTypes[e]();
+        i.Init();
+        i.SetUserContent(this);
+        i.OpenDialog(true);
+    };
+    t.OnPublish = function() {
+        ui$(this.selectors.doneEditingModal).dialog("open");
+        $("#doneEditingModalYes").focus();
+    };
+    t.SetupAutoSave = function() {
+        var e = this;
+        var t = function() {
+            var t = e.GetContentHtml();
+            if (e.autoSaveHtml && e.autoSaveHtml != t) {
+                e.SaveContent(0, true);
+            }
+            e.autoSaveHtml = t;
+        };
+        setInterval(t, 18e4);
+    };
+    t.SetupEditing = function() {
+        this.EditableTypes = {
+            code: EditableCode,
+            embeddedVideo: EditableVideo,
+            image: EditableImage,
+            header: EditableHeader,
+            survey: EditableSurvey,
+            text: EditableText,
+            zip: EditableZip,
+            linkSeries: EditableLinkSeries
+        };
+        var e = this;
+        $("[default_tooltip]").tooltip({
+            position: {
+                my: "left+15 center",
+                at: "right center"
+            },
+            track: false
+        });
+        $("[top_tooltip]").tooltip({
+            track: false
+        });
+        $(e.selectors.publishButton).button().click(function() {
+            e.OnPublish();
+        });
+        $(e.selectors.exitButton).button().click(function() {
+            location.href = "/User/Index";
+        });
+        $(this.selectors.addButton).button().click(function() {
+            e.editingElement = null;
+            ui$(e.selectors.addModal).dialog("open");
+            $(e.selectors.publishButton).show();
+        });
+        ui$(this.selectors.doneEditingModal).dialog({
+            width: 500,
+            buttons: [ {
+                id: "doneEditingModalNo",
+                click: function() {
+                    e.SaveContent(0);
+                },
+                text: "No"
+            }, {
+                id: "doneEditingModalYes",
+                click: function() {
+                    e.SaveContent(2);
+                },
+                text: "Yes"
+            } ],
+            title: "Publish",
+            autoOpen: false,
+            modal: true,
+            resizeable: false
+        });
+        ui$(this.selectors.publishModal).dialog({
+            height: 250,
+            width: 500,
+            buttons: {
+                OK: function() {
+                    window.location = "/User/Index";
+                }
+            },
+            title: "Publish success",
+            autoOpen: false,
+            modal: true,
+            resizeable: false
+        });
+    };
+    return e;
+}();
+
+var EditableElement = function() {
+    var e = function() {};
+    e.INVALID = 0;
+    e.TITLE = 1;
+    e.HEADER = 2;
+    e.CODE = 3;
+    e.TEXT = 4;
+    e.IMAGE = 6;
+    e.ZIP = 7;
+    e.SURVEY = 8;
+    e.VIDEO = 9;
+    e.LINKSERIES = 10;
+    var t = e.prototype;
+    t.AddSelectors = function(e) {
+        for (var t in e) {
+            if (!e.hasOwnProperty(t)) {
+                continue;
+            }
+            if (this.selectors[t]) {
+                alert("Key {0} already exists in selectors map".format(t));
+            }
+            this.selectors[t] = e[t];
+        }
+    };
+    t.AppendEmptyElementHtml = function() {
+        var e = this.GetDomId();
+        this.selectors.edit = "#" + e;
+        var t = {
+            id: e
+        };
+        this.userContent.AppendHtml(HtmlTemplate(HtmlBlocks.EditPageEmptyElement, t));
+    };
+    t.Render = function(e) {
+        if (this.selectors.edit) {
+            $(this.selectors.edit).replaceWith(this.GetHtml.apply(this, arguments)).attr("id", this.GetDomId());
+            this.selectors.edit = "#" + this.GetDomId();
+        } else {
+            this.userContent.AppendHtml(this.GetHtml.apply(this, arguments));
+        }
+        this.userContent.elements[this.id] = this;
+        this.SetupEditEvents.apply(this, arguments);
+        $(this.selectors.edit).data("elementInstance", this);
+        this.SetupData(e);
+    };
+    t.SetupData = function(e) {
+        this.data.type = this.type;
+        this.data.id = this.id;
+        if (typeof e["success"] != "undefined") {
+            delete e["success"];
+        }
+        for (var t in e) {
+            if (e.hasOwnProperty(t)) {
+                this.data[t] = e[t];
+            } else {
+                alert(t);
+            }
+        }
+    };
+    t.GetSelector = function(e) {
+        return "#editableElement" + e;
+    };
+    t.GetDomId = function() {
+        return "ee" + this.id;
+    };
+    t.Init = function(t) {
+        this.type = e.INVALID;
+        this.selectors = {};
+        this.currentDomElement = null;
+        this.id = t ? t.id : generateGuid();
+        this.data = t ? t : {};
+        window.ag = this.data;
+    };
+    t.GetDialog = function() {
+        return this.dialog;
+    };
+    t.OpenDialog = function(e) {
+        this.dialog = new this.dialogType();
+        this.dialog.SetUserContent(this.userContent);
+        this.dialog.Init(this);
+        this.dialog.SetupModal();
+        this.dialog.SetupModalEvents();
+        this.dialog.Open(e);
+    };
+    t.SetEditableAttr = function(e, t) {
+        e.attr({
+            editableType: t,
+            guid: this.id
+        });
+    };
+    t.SetupEditEvents = function() {
+        this.selectors.edit = "#" + this.GetDomId();
+        var t = $(this.selectors.edit);
+        if (this.type == e.INVALID) {
+            alert("Invalid element type in SetupEditEvents");
+            return;
+        }
+        this.SetEditableAttr(t, this.type);
+        return t;
+    };
+    t.SetUserContent = function(e) {
+        this.userContent = e;
+    };
+    t.GetUserContent = function(e) {
+        return this.userContent;
+    };
+    t.GetCloseFunction = function() {
+        return function() {
+            ui$(this).dialog("close");
+        };
+    };
+    t.GetEditContainer = function() {
+        return $(this.selectors.edit);
+    };
+    t.EditContainerExists = function() {
+        return $(this.selectors.edit).length > 0;
+    };
+    return e;
+}();
+
+var EditableCode = function() {
+    var e = function() {};
+    e.prototype = new EditableElement();
+    e.prototype.superclass = EditableElement.prototype;
+    var t = e.prototype;
+    t.GetHtml = function(e) {
+        var t = {
+            id: this.GetDomId(),
+            code: e.formatted_code,
+            type: this.type
+        };
+        return HtmlTemplate(HtmlBlocks.EditPageCode, t);
+    };
+    t.Init = function() {
+        this.superclass.Init.apply(this, arguments);
+        this.type = EditableElement.CODE;
+        this.AddSelectors({
+            addCode: "#addCode",
+            addCodeType: "#addCodeType",
+            addCodeContainer: "#addCodeContainer",
+            dialog: "#addCodeModal"
+        });
+        this.dialogType = EditDialogCode;
+    };
+    t.Render = function(e) {
+        if (e.formatted_code) {
+            this.superclass.Render.apply(this, arguments);
+            return;
+        }
+        this.AppendEmptyElementHtml();
+        var t = {
+            code: e.code,
+            language: e.language
+        };
+        var i = this;
+        var a = function(t) {
+            if (t.success == false) {
+                alert("Sorry, a system error has occurred. Please try again later.");
+                return;
+            }
+            var a = {
+                code: e.code,
+                formatted_code: t.formatted_code,
+                language: e.language
+            };
+            i.superclass.Render.apply(i, [ a ]);
+        };
+        SendRequest("/Home/FormatCode", t, a, 1);
+    };
+    t.SetupData = function(e) {
+        delete e["formatted_code"];
+        this.superclass.SetupData.apply(this, arguments);
+    };
+    t.SetupEditEvents = function(e) {
+        var t = this.superclass.SetupEditEvents.apply(this, arguments);
+        t.data({
+            originaldata: e.code
+        }).attr("data-element-type-name", "code");
+    };
+    t.CloseDialog = function() {
+        this.dialog.Close();
+    };
+    t.Update = function(e) {};
+    return e;
+}();
+
+function EditableHeader() {}
+
+EditableHeader.prototype = new EditableElement();
+
+EditableHeader.prototype.superclass = EditableElement.prototype;
+
+EditableHeader.prototype.GetHtml = function(e) {
+    var t = {
+        id: this.GetDomId(),
+        content: escapeHTML(e.header),
+        type: this.type
+    };
+    return HtmlTemplate(HtmlBlocks.EditPageHeader, t);
+};
+
+EditableHeader.prototype.Init = function() {
+    this.superclass.Init.apply(this, arguments);
+    this.type = EditableElement.HEADER;
+    this.AddSelectors({
+        addHeader: "#addHeader",
+        dialog: "#addHeaderModal",
+        addHeaderContainer: "#addHeaderContainer"
+    });
+    this.dialogType = EditDialogHeader;
+};
+
+EditableHeader.prototype.SetupEditEvents = function(e) {
+    var t = this.superclass.SetupEditEvents.apply(this, arguments);
+    t.data({
+        originaldata: e.header
+    }).attr("data-element-type-name", "header");
+};
+
+function EditableImage() {}
+
+EditableImage.prototype = new EditableElement();
+
+EditableImage.prototype.superclass = EditableElement.prototype;
+
+EditableImage.prototype.GetHtml = function(e) {
+    var t = this.userContent.firstRevision;
+    var i = t ? t : "None";
+    var a = e.folder_guid;
+    if (e.thumbnail_file) {
+        var n = {
+            id: this.GetDomId(),
+            type: this.type,
+            content: e.html ? e.html : "",
+            href: "/uploads/{0}/{1}".format(a, e.file_name),
+            src: "/uploads/{0}/{1}".format(a, e.thumbnail_file)
+        };
+        return HtmlTemplate(HtmlBlocks.EditPageImageThumbnail, n);
+    } else {
+        var o = {
+            id: this.GetDomId(),
+            content: e.html ? e.html : "",
+            type: this.type,
+            src: "/uploads/{0}/{1}".format(a, e.file_name)
+        };
+        return HtmlTemplate(HtmlBlocks.EditPageImage, o);
+    }
+};
+
+EditableImage.prototype.Init = function() {
+    this.superclass.Init.apply(this, arguments);
+    this.type = EditableElement.IMAGE;
+    this.AddSelectors({
+        addImageModal: "#addImageModal",
+        addImage: "#addImage",
+        addImageContainer: "#addImageContainer",
+        addText: "#addText",
+        addTextContainer: "#addTextContainer"
+    });
+    this.dialogType = EditDialogImage;
+};
+
+EditableImage.prototype.SetupEditEvents = function(e) {
+    var t = this.superclass.SetupEditEvents.apply(this, arguments);
+    t.attr("data-element-type-name", "image");
+};
+
+function EditableSurvey() {}
+
+EditableSurvey.prototype = new EditableElement();
+
+EditableSurvey.prototype.superclass = EditableElement.prototype;
+
+EditableSurvey.prototype.GetHtml = function(e) {
+    var t = e.surveyChoices;
+    var i = "";
+    for (var a = 0; a < t.length; a++) {
+        i += HtmlTemplate(HtmlBlocks.EditPageSurveyOption, {
+            radio_name: "editableRadio" + this.id,
+            radio_value: a,
+            choice_name: t[a]
+        });
+    }
+    var n = {
+        id: this.GetDomId(),
+        type: this.type,
+        question: e.surveyQuestion,
+        choices: i
+    };
+    return HtmlTemplate(HtmlBlocks.EditPageSurvey, n);
+};
+
+EditableSurvey.prototype.Init = function() {
+    this.superclass.Init.apply(this, arguments);
+    this.type = EditableElement.SURVEY;
+    this.AddSelectors({
+        addSurveyOptions: "#addSurveyOptions",
+        addSurveyOptionButton: "#addSurveyOptionButton",
+        addSurveyQuestion: "#addSurveyQuestion",
+        dialog: "#addSurveyModal",
+        surveyChoiceModal: "#surveyChoiceModal",
+        surveyChoiceInput: "#surveyChoiceInput",
+        addSurveyContainer: "#addSurveyContainer"
+    });
+    this.dialogType = EditDialogSurvey;
+};
+
+EditableSurvey.prototype.SetupEditEvents = function() {
+    var e = this.superclass.SetupEditEvents.apply(this, arguments);
+    e.attr("data-element-type-name", "survey");
+};
+
+var EditableText = function() {
+    var e = function() {};
+    e.prototype = new EditableElement();
+    e.prototype.superclass = EditableElement.prototype;
+    var t = e.prototype;
+    t.GetHtml = function(e) {
+        var t = {
+            id: this.GetDomId(),
+            content: e.html,
+            type: this.type
+        };
+        return HtmlTemplate(HtmlBlocks.EditPageText, t);
+    };
+    t.Init = function() {
+        this.superclass.Init.apply(this, arguments);
+        this.type = EditableElement.TEXT;
+        this.AddSelectors({
+            addText: "#addText",
+            addTextContainer: "#addTextContainer",
+            dialog: "#addTextModal"
+        });
+        this.dialogType = EditDialogText;
+    };
+    t.SetupEditEvents = function(e) {
+        var t = this.superclass.SetupEditEvents.apply(this, arguments);
+        t.data({
+            originaldata: e
+        }).attr("data-element-type-name", "text");
+    };
+    return e;
+}();
+
+function EditableTitle() {}
+
+EditableTitle.prototype = new EditableElement();
+
+EditableTitle.prototype.superclass = EditableElement.prototype;
+
+EditableTitle.prototype.GetHtml = function(e) {
+    var t = {
+        title: e.title,
+        type: this.type,
+        id: this.GetDomId()
+    };
+    return HtmlTemplate(HtmlBlocks.EditPageTitle, t);
+};
+
+EditableTitle.prototype.Init = function(e) {
+    this.superclass.Init.apply(this, arguments);
+    this.type = EditableElement.TITLE;
+    this.AddSelectors({
+        addTitle: "#addTitle",
+        dialog: "#editTitleModal",
+        showTitle: ""
+    });
+    this.dialogType = EditDialogTitle;
+};
+
+EditableTitle.prototype.SetupEditEvents = function(e) {
+    var t = e.title;
+    var i = this.superclass.SetupEditEvents.apply(this, arguments);
+    var a = this;
+    i.data({
+        "data-element-type-name": "title"
+    }).on("click", function() {
+        a.OpenDialog();
+    });
+};
+
+function EditableVideo() {}
+
+EditableVideo.prototype = new EditableElement();
+
+EditableVideo.prototype.superclass = EditableElement.prototype;
+
+EditableVideo.prototype.GetHtml = function(e) {
+    var t = {
+        videoId: e.youtubeVideoId,
+        id: this.GetDomId(),
+        type: this.type
+    };
+    return HtmlTemplate(HtmlBlocks.EditPageEmbeddedVideo, t);
+};
+
+EditableVideo.prototype.Init = function() {
+    this.superclass.Init.apply(this, arguments);
+    this.type = EditableElement.VIDEO;
+    this.AddSelectors({
+        embeddedVideoLink: "#embeddedVideoLink",
+        embeddedVideoModal: "#embeddedVideoModal"
+    });
+    this.dialogType = EditDialogVideo;
+};
+
+EditableVideo.prototype.SetupEditEvents = function() {
+    this.superclass.SetupEditEvents.apply(this, arguments);
+};
+
+function EditableZip() {}
+
+EditableZip.prototype = new EditableElement();
+
+EditableZip.prototype.superclass = EditableElement.prototype;
+
+EditableZip.prototype.GetHtml = function(e) {
+    var t = {
+        file_name: e.file_name,
+        folder_guid: e.folder_guid,
+        id: this.GetDomId(),
+        guid: this.id,
+        type: this.type
+    };
+    return HtmlTemplate(HtmlBlocks.EditPageZip, t);
+};
+
+EditableZip.prototype.Init = function() {
+    this.superclass.Init.apply(this, arguments);
+    this.type = EditableElement.ZIP;
+    this.AddSelectors({
+        addZipModal: "#addZipModal",
+        addZipContainer: "#addZipContainer",
+        button: "#editableElementButton"
+    });
+    this.dialogType = EditDialogZip;
+};
+
+EditableZip.prototype.SetupEditEvents = function(e) {
+    this.superclass.SetupEditEvents.apply(this, arguments);
+    var t = this.userContent.firstRevision;
+    var i = e.folder_guid;
+    var a = "/uploads/{0}/{1}".format(i, e.file_name);
+    $(this.selectors.button).button().click(function() {
+        var e = window.open(a, "_blank");
+        e.focus();
+    });
+};
+
+var EditableLinkSeries = function() {
+    var e = function() {};
+    e.prototype = new EditableElement();
+    e.prototype.superclass = EditableElement.prototype;
+    var t = e.prototype;
+    t.GetHtml = function(e) {
+        e.id = this.GetDomId();
+        return HtmlTemplate(HtmlBlocks.EditPageLinkSeries, e);
+    };
+    t.Init = function() {
+        this.superclass.Init.apply(this, arguments);
+        this.type = EditableElement.LINKSERIES;
+        this.AddSelectors({
+            addLinkSeriesModal: "#addLinkSeriesModal",
+            addLinkSeriesContainer: "#addLinkSeriesContainer",
+            button: "#editableElementButton"
+        });
+        this.dialogType = EditDialogLinkSeries;
+    };
+    t.SetupEditEvents = function(e) {
+        this.superclass.SetupEditEvents.apply(this, arguments);
+        var t = this.userContent.firstRevision;
+        var i = t ? t : "None";
+        var a = "/uploads/{0}/{1}".format(i, e.guidFile);
+        $(this.selectors.button).button().click(function() {
+            var e = window.open(a, "_blank");
+            e.focus();
+        });
+    };
+    return e;
+}();
+
+var EditDialog = function() {
+    var e = function() {};
+    var t = e.prototype;
+    t.AddSelectors = function(e) {
+        for (var t in e) {
+            if (!e.hasOwnProperty(t)) {
+                continue;
+            }
+            if (this.selectors[t]) {
+                alert("Key {0} already exists in selectors map".format(t));
+            }
+            this.selectors[t] = e[t];
+        }
+    };
+    t.Save = function() {};
+    t.SetElement = function(e) {
+        this.element = e;
+    };
+    t.SetupModal = function() {
+        this.SaveModalHtml();
+        this.RestoreModalHtml();
+    };
+    t.SetupModalEvents = function() {
+        var e = this;
+        this.$("ee-save").off("click").on("click", function() {
+            e.Save();
+        });
+        this.setupCollapse();
+    };
+    t.$ = function(e) {
+        var t = $(this.selectors.modal);
+        return t.find("." + e);
+    };
+    t.setupCollapse = function() {
+        var e = $(this.selectors.modal);
+        e.find("[data-collapse]").on("click", function() {
+            var e = $(this).attr("data-collapse");
+            $("#" + e).toggle();
+        });
+    };
+    t.GetCloseFunction = function() {
+        return function() {
+            ui$(this).dialog("close");
+        };
+    };
+    t.Init = function(e) {
+        this.element = e;
+        this.selectors = {};
+    };
+    t.RestoreModalHtml = function() {
+        var e = $(this.selectors.modal).find(".modal-dialog");
+        if (e.data("modalBodyHtml")) {
+            e.html(e.data("modalBodyHtml"));
+        }
+    };
+    t.SaveModalHtml = function() {
+        var e = $(this.selectors.modal).find(".modal-dialog");
+        if (!e.data("modalBodyHtml")) {
+            e.data("modalBodyHtml", e.html());
+            e.html(e.html());
+        }
+    };
+    t.PreShowModal = function(e) {};
+    t.Open = function(e) {
+        this.PreShowModal(e);
+        $(this.selectors.modal).modal("show");
+    };
+    t.Close = function() {
+        $(this.selectors.modal).modal("hide");
+    };
+    t.SetUserContent = function(e) {
+        this.userContent = e;
+    };
+    return e;
+}();
+
+var EditDialogCode = function() {
+    var e = function() {};
+    e.prototype = new EditDialog();
+    e.prototype.superclass = EditDialog.prototype;
+    var t = e.prototype;
+    t.GetModalHtml = function() {
+        return HtmlTemplate(HtmlBlocks.EditPageCodeModal, {
+            id: this.element.id
+        });
+    };
+    t.Init = function() {
+        window.languagesMap = {};
+        for (var t in e.languages) {
+            if (e.languages.hasOwnProperty(t)) {
+                window.languagesMap[e.languages[t]] = t;
+            }
+        }
+        window.languagesMapString = JSON.stringify(window.languagesMap);
+        this.superclass.Init.apply(this, arguments);
+        this.type = EditableElement.CODE;
+        this.AddSelectors({
+            modal: "#ee-code-modal",
+            addCode: "#ee-code",
+            addCodeType: "#ee-code-combo-ddi",
+            addCodeContainer: "#addCodeContainer",
+            dialog: "#addCodeModal"
+        });
+    };
+    t.PreShowModal = function(t) {
+        this.superclass.PreShowModal.apply(this, arguments);
+        if (!this.initDone) {
+            var i = function(t) {
+                var i = new STComboBox();
+                i.Init(t + "-combo");
+                var a = [];
+                var n = 0;
+                _.each(e.languages, function(e, t) {
+                    a.push({
+                        id: n++,
+                        text: t
+                    });
+                });
+                i.onSelect = function(e, t) {};
+                i.populateList(a);
+            };
+            i("ee-code");
+        }
+        this.initDone = true;
+        if (t) {
+            return;
+        }
+        var a = this.element.data.language;
+        this.languagesByValue = this.languagesByValue ? this.languagesByValue : _.invert(e.languages);
+        $(this.selectors.addCodeType).val(this.languagesByValue[this.element.data.language]);
+        $(this.selectors.addCode).val(this.element.data.code);
+    };
+    t.Save = function() {
+        var t = this;
+        var i = function() {
+            t.Close();
+        };
+        var a = $.trim($(this.selectors.addCode).val());
+        if (!a) {
+            alert("Please enter code into the textarea.");
+            return;
+        }
+        var n = $(this.selectors.addCodeType).val();
+        if (!n) {
+            alert("Please enter a language.");
+            return;
+        }
+        var o = e.languages[n];
+        if (!o) {
+            alert("Please enter or choose a valid language.");
+            return;
+        }
+        var s = {
+            code: a,
+            language: o
+        };
+        var t = this;
+        var r = function(e) {
+            if (e.success == false) {
+                alert("Sorry, a system error has occurred. Please try again later.");
+                return;
+            }
+            if (i) {
+                i();
+            }
+            e.code = s.code;
+            e.language = s.language;
+            t.element.Render(e);
+        };
+        SendRequest("/Home/FormatCode", s, r, 1);
+    };
+    t.SetupModal = function(e) {
+        this.superclass.SetupModal.apply(this, arguments);
+        var t = this;
+    };
+    e.languages = {
+        ABAP: "abap",
+        ANTLR: "antlr",
+        "ANTLR With ActionScript Target": "antlr-as",
+        "ANTLR With C# Target": "antlr-csharp",
+        "ANTLR With CPP Target": "antlr-cpp",
+        "ANTLR With Java Target": "antlr-java",
+        "ANTLR With ObjectiveC Target": "antlr-objc",
+        "ANTLR With Perl Target": "antlr-perl",
+        "ANTLR With Python Target": "antlr-python",
+        "ANTLR With Ruby Target": "antlr-ruby",
+        ActionScript: "as",
+        "ActionScript 3": "as3",
+        Ada: "ada",
+        ApacheConf: "apacheconf",
+        AppleScript: "applescript",
+        Asymptote: "asy",
+        Awk: "awk",
+        BBCode: "bbcode",
+        "Base Makefile": "basemake",
+        Bash: "bash",
+        "Bash Session": "console",
+        Batchfile: "bat",
+        Befunge: "befunge",
+        BlitzMax: "blitzmax",
+        Boo: "boo",
+        Brainfuck: "brainfuck",
+        Bro: "bro",
+        C: "c",
+        "C#": "csharp",
+        "C++": "cpp",
+        CFEngine3: "cfengine3",
+        CMake: "cmake",
+        CSS: "css",
+        "CSS+Django/Jinja": "css+django",
+        "CSS+Genshi Text": "css+genshitext",
+        "CSS+Mako": "css+mako",
+        "CSS+Myghty": "css+myghty",
+        "CSS+PHP": "css+php",
+        "CSS+Ruby": "css+erb",
+        "CSS+Smarty": "css+smarty",
+        Cheetah: "cheetah",
+        Clojure: "clojure",
+        CoffeeScript: "coffee-script",
+        "Coldfusion HTML": "cfm",
+        "Common Lisp": "common-lisp",
+        Coq: "coq",
+        Cython: "cython",
+        D: "d",
+        DTD: "dtd",
+        "Darcs Patch": "dpatch",
+        Dart: "dart",
+        "Debian Control file": "control",
+        "Debian Sourcelist": "sourceslist",
+        Delphi: "delphi",
+        Diff: "diff",
+        "Django/Jinja": "django",
+        Duel: "duel",
+        Dylan: "dylan",
+        ECL: "ecl",
+        ERB: "erb",
+        Elixir: "elixir",
+        "Elixir iex session": "iex",
+        "Embedded Ragel": "ragel-em",
+        Erlang: "erlang",
+        "Erlang erl session": "erl",
+        Evoque: "evoque",
+        FSharp: "fsharp",
+        Factor: "factor",
+        Fancy: "fancy",
+        Fantom: "fan",
+        Felix: "felix",
+        Fortran: "fortran",
+        GAS: "gas",
+        GLSL: "glsl",
+        Genshi: "genshi",
+        "Genshi Text": "genshitext",
+        "Gettext Catalog": "pot",
+        Gherkin: "Cucumber",
+        Gnuplot: "gnuplot",
+        Go: "go",
+        "GoodData-CL": "gooddata-cl",
+        Gosu: "gosu",
+        "Gosu Template": "gst",
+        Groff: "groff",
+        Groovy: "groovy",
+        HTML: "html",
+        "HTML+Cheetah": "html+cheetah",
+        "HTML+Django/Jinja": "html+django",
+        "HTML+Evoque": "html+evoque",
+        "HTML+Genshi": "html+genshi",
+        "HTML+Mako": "html+mako",
+        "HTML+Myghty": "html+myghty",
+        "HTML+PHP": "html+php",
+        "HTML+Smarty": "html+smarty",
+        "HTML+Velocity": "html+velocity",
+        HTTP: "http",
+        Haml: "haml",
+        Haskell: "haskell",
+        Hybris: "hybris",
+        INI: "ini",
+        "IRC logs": "irc",
+        Io: "io",
+        Ioke: "ioke",
+        JSON: "json",
+        Jade: "jade",
+        Java: "java",
+        "Java Server Page": "jsp",
+        JavaScript: "js",
+        "JavaScript+Cheetah": "js+cheetah",
+        "JavaScript+Django/Jinja": "js+django",
+        "JavaScript+Genshi Text": "js+genshitext",
+        "JavaScript+Mako": "js+mako",
+        "JavaScript+Myghty": "js+myghty",
+        "JavaScript+PHP": "js+php",
+        "JavaScript+Ruby": "js+erb",
+        "JavaScript+Smarty": "js+smarty",
+        Kotlin: "kotlin",
+        LLVM: "llvm",
+        "Lighttpd configuration file": "lighty",
+        "Literate Haskell": "lhs",
+        Logtalk: "logtalk",
+        Lua: "lua",
+        MAQL: "maql",
+        MOOCode: "moocode",
+        MXML: "mxml",
+        Makefile: "make",
+        Mako: "mako",
+        Mason: "mason",
+        Matlab: "matlab",
+        "Matlab session": "matlabsession",
+        MiniD: "minid",
+        Modelica: "modelica",
+        "Modula-2": "modula2",
+        "MoinMoin/Trac Wiki markup": "trac-wiki",
+        MoonScript: "moon",
+        MuPAD: "mupad",
+        MySQL: "mysql",
+        Myghty: "myghty",
+        NASM: "nasm",
+        Nemerle: "nemerle",
+        NewLisp: "newlisp",
+        Newspeak: "newspeak",
+        "Nginx configuration file": "nginx",
+        Nimrod: "nimrod",
+        NumPy: "numpy",
+        OCaml: "ocaml",
+        "Objective-C": "objective-c",
+        "Objective-J": "objective-j",
+        Octave: "octave",
+        Ooc: "ooc",
+        Opa: "opa",
+        "OpenEdge ABL": "openedge",
+        PHP: "php",
+        "PL/pgSQL": "plpgsql",
+        POVRay: "pov",
+        Perl: "perl",
+        PostScript: "postscript",
+        "PostgreSQL SQL dialect": "postgresql",
+        "PostgreSQL console (psql)": "psql",
+        PowerShell: "powershell",
+        Prolog: "prolog",
+        Properties: "properties",
+        "Protocol Buffer": "protobuf",
+        "PyPy Log": "pypylog",
+        Python: "python",
+        "Python 3": "python3",
+        "Python 3.0 Traceback": "py3tb",
+        "Python Traceback": "pytb",
+        "Python console session": "pycon",
+        RConsole: "rconsole",
+        REBOL: "rebol",
+        RHTML: "rhtml",
+        Ragel: "ragel",
+        "Ragel in C Host": "ragel-c",
+        "Ragel in CPP Host": "ragel-cpp",
+        "Ragel in D Host": "ragel-d",
+        "Ragel in Java Host": "ragel-java",
+        "Ragel in Objective C Host": "ragel-objc",
+        "Ragel in Ruby Host": "ragel-ruby",
+        "Raw token data": "raw",
+        Redcode: "redcode",
+        Ruby: "rb",
+        "Ruby irb session": "rbcon",
+        S: "splus",
+        SCSS: "scss",
+        SQL: "sql",
+        Sass: "sass",
+        Scala: "scala",
+        "Scalate Server Page": "ssp",
+        Scaml: "scaml",
+        Scheme: "scheme",
+        Scilab: "scilab",
+        Smalltalk: "smalltalk",
+        Smarty: "smarty",
+        Snobol: "snobol",
+        SquidConf: "squidconf",
+        "Standard ML": "sml",
+        Tcl: "tcl",
+        Tcsh: "tcsh",
+        TeX: "tex",
+        Tea: "tea",
+        "Text only": "text",
+        UrbiScript: "urbiscript",
+        "VB.net": "vb.net",
+        Vala: "vala",
+        Velocity: "velocity",
+        VimL: "vim",
+        XML: "xml",
+        "XML+Cheetah": "xml+cheetah",
+        "XML+Django/Jinja": "xml+django",
+        "XML+Evoque": "xml+evoque",
+        "XML+Mako": "xml+mako",
+        "XML+Myghty": "xml+myghty",
+        "XML+PHP": "xml+php",
+        "XML+Ruby": "xml+erb",
+        "XML+Smarty": "xml+smarty",
+        "XML+Velocity": "xml+velocity",
+        XQuery: "xquery",
+        XSLT: "xslt",
+        YAML: "yaml",
+        "aspx-cs": "aspx-cs",
+        "aspx-vb": "aspx-vb",
+        autohotkey: "ahk",
+        "c-objdump": "c-objdump",
+        cfstatement: "cfs",
+        "cpp-objdump": "cpp-objdump",
+        "d-objdump": "d-objdump",
+        eC: "ec",
+        haXe: "hx",
+        objdump: "objdump",
+        reStructuredText: "rst",
+        sqlite3con: "sqlite3",
+        systemverilog: "sv",
+        verilog: "v",
+        vhdl: "vhdl"
+    };
+    return e;
+}();
+
+var EditDialogHeader = function() {
+    var e = function() {};
+    e.prototype = new EditDialog();
+    e.prototype.superclass = EditDialog.prototype;
+    var t = e.prototype;
+    t.Save = function() {
+        var e = $.trim($(this.selectors.addHeader).val());
+        this.element.Render({
+            header: e
+        });
+        this.Close();
+    };
+    t.GetModalHtml = function() {
+        return HtmlTemplate(HtmlBlocks.EditPageHeaderModal, {
+            id: this.element.id
+        });
+    };
+    t.Init = function() {
+        this.superclass.Init.apply(this, arguments);
+        this.type = EditableElement.HEADER;
+        this.AddSelectors({
+            modal: "#ee-header-modal",
+            addHeader: "#addHeader",
+            dialog: "#addHeaderModal",
+            addHeaderContainer: "#addHeaderContainer"
+        });
+    };
+    t.PreShowModal = function(e) {
+        this.superclass.PreShowModal.apply(this, arguments);
+        if (e) {
+            return;
+        }
+        $(this.selectors.addHeader).val(this.element.data.header);
+    };
+    t.SetupModal = function(e) {
+        this.superclass.SetupModal.apply(this, arguments);
+        var t = this;
+        $(this.selectors.addHeader).keypress(function(e) {
+            if (e.which == 13) {
+                t.Save();
+                t.Close();
+            }
+        });
+    };
+    return e;
+}();
+
+var EditDialogImage = function() {
+    var e = function() {};
+    e.prototype = new EditDialog();
+    e.prototype.superclass = EditDialog.prototype;
+    var t = e.prototype;
+    t.PostUploadSuccess = function(e) {
+        var t = e.result;
+        if (!t.success) {
+            $(this.selectors.imageUploadError).html("Sorry, an error has occurred..");
+            return;
+        }
+        $(this.selectors.addImageContainer).hide();
+        $(this.selectors.addImagePreviewContainer).show();
+        var i = t.file;
+        var a = i.filename;
+        var n = i.folderGuid;
+        var o = i.thumbnailCreated;
+        var s = {
+            file_name: a,
+            folder_guid: n
+        };
+        if (o) {
+            var r = a.split(".");
+            s.thumbnail_file = r[0] + ".thumbnail." + r[1];
+        }
+        this.editData = s;
+        var l = 230;
+        var d = 260;
+        var u = i.width;
+        var c = i.height;
+        if (u > l) {
+            u = l;
+            c = Math.floor(t.height * l / u);
+        }
+        if (c > d) {
+            c = d;
+            u = Math.floor(t.width * d / c);
+        }
+        var p = {
+            id: this.element.id,
+            src: "/uploads/{0}/{1}".format(n, o ? s.thumbnail_file : a),
+            width: u,
+            height: c
+        };
+        $(this.selectors.addImagePreview).html(HtmlTemplate(HtmlBlocks.EditPageImagePreview, p));
+    };
+    t.Save = function() {
+        this.element.Render(this.editData);
+        this.Close();
+    };
+    t.GetModalHtml = function() {
+        return HtmlTemplate(HtmlBlocks.EditPageImageModal, {
+            id: this.element.id
+        });
+    };
+    t.Init = function() {
+        this.superclass.Init.apply(this, arguments);
+        this.AddSelectors({
+            modal: "#ee-image-modal",
+            dialog: "#addImageModal",
+            addImage: "#addImage",
+            addImageContainer: "#addImageContainer",
+            addImagePreviewContainer: "#addImagePreviewContainer",
+            addImagePreview: "#addImagePreview",
+            addImageReplaceImage: "#addImageReplaceImage",
+            imageUpload: "#imageupload",
+            imageUploadError: "#imageupload_error",
+            imageUploadSuccess: "#imageupload_success",
+            addTextEditor: "#addTextEditor",
+            addText: "#addText",
+            addTextContainer: "#addTextContainer"
+        });
+        this.editData = this.element.data;
+    };
+    t.Open = function(e) {
+        this.superclass.Open.apply(this, arguments);
+        var t = $(this.selectors.modal).find(".modal-dialog");
+        var i = t.find(".addImagePreviewContainer");
+        i.width(t.width() - 50);
+    };
+    t.SetupModalEvents = function() {
+        this.superclass.SetupModalEvents.apply(this, arguments);
+        var e = this;
+        $(this.selectors.imageUpload).fileupload({
+            dataType: "json",
+            done: function(e, t) {
+                if (typeof t.files == "undefined") {
+                    return;
+                }
+            },
+            add: function(t, i) {
+                var a = i.files;
+                if (a.length > 1) {
+                    alert("Only one file upload is permitted at a time.");
+                    return;
+                }
+                var n = a[0];
+                var o = n.name;
+                if (o.indexOf(".") == -1) {
+                    alert("The uploaded file must have an extension of .jpg, .jpeg, or .png");
+                    return;
+                }
+                var s = o.substr(o.lastIndexOf(".") + 1);
+                if (s != "jpg" && s != "jpeg" && s != "png") {
+                    alert("The uploaded file must have an extension of .jpg, .jpeg, or .png");
+                    return;
+                }
+                if (n.size > e.uploadLimit) {
+                    alert("Sorry, your temporary quota of {0} has been exceeded".format(e.uploadLimit));
+                }
+                $(e.selectors.imageUploadError).html("");
+                i.submit();
+            }
+        }).bind("fileuploadsubmit", function(e, t) {}).bind("fileuploaddone", function(t, i) {
+            e.PostUploadSuccess(i);
+        }).bind("fileuploadfail", function(t, i) {
+            $(e.selectors.imageUploadError).html("Sorry, an error has occurred.");
+        });
+        $(this.selectors.addImageReplaceImage).on("click", function() {
+            e.PreShowModal(false);
+            e.SetupModal();
+            e.SetupModalEvents();
+        });
+    };
+    t.SetupModal = function() {
+        this.superclass.SetupModal.apply(this, arguments);
+        var e = this;
+        this.stHtmlEditor = new StHtmlEditor();
+        this.stHtmlEditor.Init(this, this.selectors.addText.substr(1));
+    };
+    t.CopyModalBody = function(e) {
+        var t = e.substr(1) + "_original";
+        if (document.getElementById(t)) {
+            return;
+        }
+        var i = $(e);
+        var a = $('<div id="' + t + '" style="display: none"></div>');
+        i.parent().append(a);
+        a.html(i.html());
+    };
+    t.CopyContents = function(e) {
+        var t = e.substr(1) + "_original";
+        if (document.getElementById(t)) {
+            return;
+        }
+        var i = $(e);
+        var a = $('<div id="' + t + '" style="display: none"></div>');
+        i.parent().append(a);
+        a.html(i.html());
+    };
+    t.PreShowModal = function(e) {
+        this.superclass.PreShowModal.apply(this, arguments);
+        if (e) {
+            $(this.selectors.addImageContainer).show();
+            $(this.selectors.addImagePreviewContainer).hide();
+        } else {
+            $(this.selectors.addImageContainer).hide();
+            $(this.selectors.addImagePreviewContainer).show();
+        }
+        if (e) {} else {
+            $(this.selectors.addImagePreview).html(this.element.GetHtml(this.element.data));
+        }
+    };
+    return e;
+}();
+
+var EditDialogSurvey = function() {
+    var e = function() {};
+    e.prototype = new EditDialog();
+    e.prototype.superclass = EditDialog.prototype;
+    var t = e.prototype;
+    t.Save = function(e, t) {
+        var i = {
+            surveyQuestion: e,
+            surveyChoices: t
+        };
+        this.element.Render(i);
+        this.Close();
+    };
+    t.AddSurveyChoice = function(e) {
+        var t = HtmlTemplate(HtmlBlocks.EditPageSurveyModalOption, e);
+        $(this.selectors.addSurveyOptions).append(t);
+        var i = $("#" + e.id);
+        var a = this;
+        i.on("dblclick", function(t) {
+            $(a.selectors.surveyChoiceModal).attr("data-option-id", e.id);
+            ui$(a.selectors.surveyChoiceModal).dialog("open");
+            $(a.selectors.surveyChoiceInput).val($.trim($(this).find(".surveyChoiceText").html()));
+            t.stopPropagation();
+        });
+        i.find(".ui-icon-circle-close :first").click(function() {
+            $(this).closest("li").remove();
+        });
+    };
+    t.GetModalHtml = function() {
+        return HtmlTemplate(HtmlBlocks.EditPageSurveyModal, {
+            id: this.element.id
+        }) + HtmlTemplate(HtmlBlocks.EditPageSurveyChoiceModal, {
+            id: this.element.id
+        });
+    };
+    t.Init = function() {
+        this.superclass.Init.apply(this, arguments);
+        this.type = EditableElement.SURVEY;
+        this.AddSelectors({
+            modal: "#ee-survey-modal",
+            addSurveyOptions: "#addSurveyOptions",
+            addSurveyOptionButton: "#addSurveyOptionButton",
+            addSurveyQuestion: "#addSurveyQuestion",
+            dialog: "#addSurveyModal",
+            surveyChoiceModal: "#surveyChoiceModal",
+            surveyChoiceInput: "#surveyChoiceInput",
+            addSurveyContainer: "#addSurveyContainer"
+        });
+    };
+    t.SetupModalEvents = function() {
+        this.superclass.SetupModalEvents.apply(this, arguments);
+        var e = this;
+        ui$(this.selectors.addSurveyOptions).sortable().disableSelection();
+        $(this.selectors.addSurveyOptionButton).button({
+            icons: {
+                primary: "ui-icon-circle-plus"
+            }
+        }).click(function() {
+            $(e.selectors.surveyChoiceInput).val("");
+            $(e.selectors.surveyChoiceModal).attr("data-option-id", "");
+            ui$(e.selectors.surveyChoiceModal).dialog("open");
+        });
+        $(this.selectors.surveyChoiceInput).keypress(function(t) {
+            if (t.which == 13) {
+                e.EditSurveyChoice();
+            }
+        });
+    };
+    t.EditSurveyChoice = function() {
+        var e = $(this.selectors.surveyChoiceModal).attr("data-option-id");
+        if (e == "") {
+            var t = {
+                surveyChoiceInput: $(this.selectors.surveyChoiceInput).val(),
+                id: "sc" + generateGuid()
+            };
+            this.AddSurveyChoice(t);
+        } else {
+            var i = $(this.selectors.surveyChoiceInput).val();
+            $("#" + e).find(".surveyChoiceText:first").html(i);
+        }
+        ui$(this.selectors.surveyChoiceModal).dialog("close");
+    };
+    t.SetupModal = function() {
+        this.superclass.SetupModal.apply(this, arguments);
+        var e = this;
+        $(this.selectors.addSurveyQuestion).keypress(function(t) {
+            if (t.which == 13) {
+                $(e.selectors.addSurveyOptionButton).trigger("click");
+            }
+        });
+    };
+    t.PreShowModal = function(e) {
+        this.superclass.PreShowModal.apply(this, arguments);
+        if (e) {
+            return;
+        }
+        $(this.selectors.addSurveyQuestion).val(this.element.data.surveyQuestion);
+        $(this.selectors.addSurveyOptions).html("");
+        var t = this.element.data.surveyChoices;
+        for (var i = 0; i < t.length; i++) {
+            var a = {
+                surveyChoiceInput: t[i],
+                id: "sc" + generateGuid()
+            };
+            this.AddSurveyChoice(a);
+        }
+    };
+    return e;
+}();
+
+var EditDialogText = function() {
+    var e = function() {};
+    e.prototype = new EditDialog();
+    e.prototype.superclass = EditDialog.prototype;
+    var t = e.prototype;
+    t.CreateVue = function() {
+        var e = this;
+        this.vue = new Vue({
+            el: "#ee-text-modal",
+            methods: {
+                onSearchArticles: function() {
+                    this.showArticles = true;
+                    e.SearchContent(this);
+                },
+                showSearchClicked: function(e) {
+                    this.showSearch = true;
+                    this.showFindBtn = false;
+                },
+                onSearchArticleClick: function(e) {
+                    var t = $(e.target).parent();
+                    this.url = t.attr("data-url");
+                    if (this.urlText == "") {
+                        this.urlText = t.attr("data-text");
+                    }
+                },
+                clearLinkEditor: function() {
+                    this.url = "";
+                    this.urlText = "";
+                    this.showArticles = false;
+                    this.mcOnly = false;
+                    this.titleSearch = "";
+                },
+                onLinkCancel: function(e) {
+                    this.showHtmlEditor();
+                    this.clearLinkEditor();
+                },
+                showHtmlEditor: function() {
+                    this.linkEditorVisible = false;
+                    this.htmlEditorVisible = true;
+                },
+                showLinkEditor: function() {
+                    this.linkEditorVisible = true;
+                    this.htmlEditorVisible = false;
+                },
+                onLinkOk: function(t) {
+                    e.stHtmlEditor.UpdateLink(this.url, this.urlText);
+                    this.showHtmlEditor();
+                }
+            },
+            data: {
+                showMC: $("#contentData").attr("data-current-user") != "",
+                showSearch: false,
+                showFindBtn: true,
+                titleSearch: "",
+                articles: [],
+                url: "",
+                urlText: "",
+                showArticles: false,
+                mcOnly: false,
+                htmlEditorVisible: true,
+                linkEditorVisible: false
+            }
+        });
+    };
+    t.SearchContent = function(e) {
+        var t = $("#contentData").attr("data-current-user") != "";
+        var i = e.mcOnly;
+        var a = t && i ? "/ManageContent/GetRecentPostsByUserLink" : "/Home/GetRecentPostsLink";
+        var n = {
+            searchText: e.titleSearch,
+            page: 1,
+            rows: 50,
+            sidx: "",
+            sord: "asc"
+        };
+        var o = this;
+        var s = function(t) {
+            var i = t.rows;
+            for (var a = 0; a < i.length; a++) {
+                i[a].encoded_title = encodeURIComponent(i[a].title);
+            }
+            e.articles = t.rows;
+        };
+        var r = {
+            loadingSpinContainerId: "ee-article-loading"
+        };
+        SendRequest(a, n, s, 0, r);
+    };
+    t.GetModalHtml = function() {
+        return HtmlTemplate(HtmlBlocks.EditPageTextModal, {
+            id: this.element.id
+        });
+    };
+    t.Init = function(e) {
+        this.superclass.Init.apply(this, arguments);
+        this.type = EditableElement.TEXT;
+        this.AddSelectors({
+            modal: "#ee-text-modal",
+            addTextEditor: "#addTextEditor",
+            addText: "#addText",
+            addTextContainer: "#addTextContainer",
+            dialog: "#addTextModal"
+        });
+    };
+    t.Save = function() {
+        var e = this.stHtmlEditor.GetHtmlContainerId();
+        var t = $.trim($("#" + e).html());
+        this.element.Render({
+            html: t
+        });
+        this.Close();
+    };
+    t.SetupModal = function() {
+        this.superclass.SetupModal.apply(this, arguments);
+        this.stHtmlEditor = new StHtmlEditor();
+        this.stHtmlEditor.Init(this, this.selectors.addText.substr(1));
+        var e = this;
+        this.CreateVue();
+        this.$("ee-ok").on("click", function() {});
+        this.$("ee-cancel").on("click", function() {});
+    };
+    t.LinkSearch = function() {
+        var e = this.$("ee-link-stext").val();
+        alert(e);
+    };
+    t.OpenLinkDialog = function(e, t, i) {
+        var a = this.vue;
+        a.clearLinkEditor();
+        a.url = t;
+        a.urlText = i;
+        a.showLinkEditor();
+    };
+    t.PreShowModal = function(e) {
+        this.superclass.PreShowModal.apply(this, arguments);
+        $(this.selectors.addTextContainer).show();
+        var t = this.stHtmlEditor.GetHtmlContainerId();
+        var i = $("#" + t);
+        if (e) {} else {
+            i.html(this.element.data.html);
+        }
+    };
+    return e;
+}();
+
+var EditDialogTitle = function() {
+    var e = function() {};
+    e.prototype = new EditDialog();
+    e.prototype.superclass = EditDialog.prototype;
+    var t = e.prototype;
+    t.Add = function() {};
+    t.GetModalHtml = function() {
+        return HtmlTemplate(HtmlBlocks.EditTitleModal, {
+            id: this.element.id
+        });
+    };
+    t.Init = function(e) {
+        this.superclass.Init.apply(this, arguments);
+        this.type = EditableElement.TITLE;
+        this.AddSelectors({
+            modal: "#ee-title-modal",
+            addTitle: "#addTitle",
+            dialog: "#editTitleModal",
+            showTitle: ""
+        });
+    };
+    t.PreShowModal = function(e) {
+        this.superclass.PreShowModal.apply(this, arguments);
+        $(this.selectors.addTitle).val(this.element.data.title);
+    };
+    t.SetupModalEvents = function() {
+        this.superclass.SetupModalEvents.apply(this, arguments);
+        var e = this;
+        $(this.selectors.addTitle).unbind("keypress").keypress(function(t) {
+            if (t.which == 13) {
+                e.Save();
+                return false;
+            }
+        });
+    };
+    t.SetupModal = function() {
+        this.superclass.SetupModal.apply(this, arguments);
+        var e = this;
+    };
+    t.Save = function() {
+        var e = {
+            title: $(this.selectors.addTitle).val()
+        };
+        this.element.Render(e);
+        this.Close();
+    };
+    return e;
+}();
+
+var EditDialogVideo = function() {
+    var e = function() {};
+    e.prototype = new EditDialog();
+    e.prototype.superclass = EditDialog.prototype;
+    var t = e.prototype;
+    t.Save = function() {
+        var e = $.trim($(this.selectors.embeddedVideoLink).val());
+        var t = {
+            url: e
+        };
+        var i = this;
+        var a = function(e) {
+            i.element.Render(e);
+            i.Close();
+        };
+        SendRequest("/ManageContent/GetYoutubeVideoId", t, a, 1);
+    };
+    t.GetModalHtml = function() {
+        return HtmlTemplate(HtmlBlocks.EditPageEmbeddedVideoModal, {
+            id: this.element.id
+        });
+    };
+    t.Init = function() {
+        this.superclass.Init.apply(this, arguments);
+        this.type = EditableElement.VIDEO;
+        this.AddSelectors({
+            modal: "#ee-video-modal",
+            embeddedVideoLink: "#embeddedVideoLink",
+            dialog: "#embeddedVideoModal"
+        });
+    };
+    t.PreShowModal = function(e) {
+        this.superclass.PreShowModal.apply(this, arguments);
+        if (e) {
+            $(this.selectors.embeddedVideoLink).val("http://www.youtube.com/watch?v=KIayztD5rKQ");
+            return;
+        }
+        $(this.selectors.embeddedVideoLink).val("http://www.youtube.com/watch?v=" + this.element.data.youtubeVideoId);
+    };
+    t.SetupModal = function(e) {
+        this.superclass.SetupModal.apply(this, arguments);
+        var t = this;
+    };
+    return e;
+}();
+
+var EditDialogZip = function() {
+    var e = function() {};
+    e.prototype = new EditDialog();
+    e.prototype.superclass = EditDialog.prototype;
+    var t = e.prototype;
+    t.GetModalHtml = function() {
+        return HtmlTemplate(HtmlBlocks.EditPageZipModal, {
+            id: this.element.id
+        });
+    };
+    t.Init = function() {
+        this.superclass.Init.apply(this, arguments);
+        this.type = EditableElement.ZIP;
+        this.AddSelectors({
+            modal: "#ee-zip-modal",
+            addZipContainer: "#addZipContainer",
+            zipUpload: "#zipupload",
+            zipUploadError: "#zipupload_error",
+            zipUploadSuccess: "#zipupload_success",
+            dialog: "#addZipModal"
+        });
+    };
+    t.SetupModalEvents = function() {
+        this.superclass.SetupModalEvents.apply(this, arguments);
+        var e = this;
+        $(this.selectors.zipUpload).fileupload({
+            dataType: "json",
+            done: function(e, t) {
+                if (typeof t.files == "undefined") {
+                    return;
+                }
+            },
+            add: function(t, i) {
+                var a = i.files;
+                if (a.length > 1) {
+                    alert("Only one file upload is permitted at a time.");
+                    return;
+                }
+                var n = a[0];
+                var o = n.name;
+                if (o.indexOf(".") == -1) {
+                    alert("The uploaded file must have an extension");
+                    return;
+                }
+                if (n.size > e.uploadLimit) {
+                    alert("Sorry, your temporary quota of {0} has been exceeded".format(e.uploadLimit));
+                }
+                i.submit();
+            }
+        }).bind("fileuploadsubmit", function(e, t) {}).bind("fileuploaddone", function(t, i) {
+            if (!i.result.success) {
+                $(e.selectors.zipUploadError).html("Sorry, an error has occurred..");
+                return;
+            }
+            $(e.selectors.zipUploadSuccess).html("Upload successful. You may now close the dialog.");
+            var a = i.result.file;
+            var n = a.filename;
+            var o = a.folderGuid;
+            var s = {
+                file_name: n,
+                folder_guid: o
+            };
+            e.element.Render(s);
+        }).bind("fileuploadfail", function(t, i) {
+            $(e.selectors.zipUploadError).html("Sorry, an error has occurred.");
+        });
+    };
+    t.SetupModal = function() {
+        this.superclass.SetupModal.apply(this, arguments);
+    };
+    return e;
+}();
+
+var EditDialogLinkSeries = function() {
+    var e = function() {};
+    e.prototype = new EditDialog();
+    e.prototype.superclass = EditDialog.prototype;
+    var t = e.prototype;
+    t.GetModalHtml = function() {
+        return "";
+    };
+    t.Init = function() {
+        this.superclass.Init.apply(this, arguments);
+        this.type = EditableElement.LINKSERIES;
+        this.AddSelectors({
+            modal: "#ee-ls-modal",
+            addLinkSeriesContainer: "#addLinkSeriesContainer",
+            dialog: "#addLinkSeriesModal",
+            addLinkSeriesLink: "#addLinkSeriesLink",
+            addLinkSeriesLinkButton: "#addLinkSeriesLinkButton",
+            addLinkSeriesModal: "#addLinkSeriesModal",
+            addLinkSeriesInput: "#addLinkSeriesInput"
+        });
+    };
+    t.CreateVue = function() {
+        var e = this;
+        this.vue = new Vue({
+            el: "#ee-ls-modal",
+            methods: {
+                onSearchArticles: function() {
+                    this.showArticles = true;
+                    e.SearchContent(this);
+                },
+                showSearchClicked: function(e) {
+                    this.showSearch = true;
+                    this.showFindBtn = false;
+                },
+                onSearchArticleClick: function(e) {
+                    var t = $(e.target).parent();
+                    var i = t.attr("data-first-revision");
+                    var a = t.attr("data-text");
+                    for (var n = 0; n < this.links.length; n++) {
+                        if (this.links[n].id == i) {
+                            alert("The list already contains this item.");
+                            return;
+                        }
+                    }
+                    this.links.push({
+                        id: i,
+                        title: a
+                    });
+                },
+                onAdd: function() {
+                    this.editId = null;
+                    this.showForm();
+                },
+                onAddLinks: function() {
+                    this.showSearch = true;
+                    this.addLinksVisible = false;
+                },
+                showForm: function() {
+                    this.isHomeVisible = false;
+                    this.seriesFormVisible = true;
+                    this.addLinksVisible = true;
+                    this.showSearch = false;
+                    this.links = [];
+                    this.seriesName = "";
+                },
+                showHome: function(t) {
+                    e.GetSeriesList(t);
+                    this.isHomeVisible = true;
+                    this.seriesFormVisible = false;
+                },
+                onEdit: function() {
+                    var t = $("#ee-ls-combo-ddi").val();
+                    if (!t) {
+                        alert("Please select a series to edit, or create one.");
+                        return;
+                    }
+                    this.showForm();
+                    e.GetSeries(this);
+                },
+                onDelete: function() {
+                    var t = $("#ee-ls-combo-ddi").val();
+                    if (!t) {
+                        alert("Please select a series to edit, or create one.");
+                        return;
+                    }
+                    var i = function() {
+                        e.GetSeriesList();
+                    };
+                    e.DeleteSeries(t, i);
+                },
+                onFormCancel: function() {
+                    this.showHome();
+                },
+                onFormSave: function() {
+                    if (!this.seriesName) {
+                        alert("Please name this series of links, for your reference.");
+                        return;
+                    }
+                    var t = this;
+                    var i = function(e) {
+                        if (e.success === false && e.message == "duplicate") {
+                            alert("One of the articles already exists in a series.");
+                            return;
+                        }
+                        var i = function() {
+                            $("#ee-ls-combo-ddi").val(t.seriesName);
+                        };
+                        t.showHome(i);
+                    };
+                    var a = [];
+                    $("#ee-ls-links").find("li").each(function() {
+                        a.push($(this).attr("data-id") * 1);
+                    });
+                    e.SaveSeries(this.editId ? this.editId : null, this.seriesName, a, i);
+                },
+                onArticleRemove: function(e) {
+                    $(e.target).closest("li").remove();
+                }
+            },
+            data: {
+                seriesFormVisible: false,
+                isHomeVisible: true,
+                seriesName: "",
+                links: [],
+                showSearch: false,
+                titleSearch: "",
+                showArticles: false,
+                articles: [],
+                addLinksVisible: true,
+                bottomLoading: true
+            }
+        });
+        return this.vue;
+    };
+    t.SearchContent = function(e) {
+        var t = $("#contentData").attr("data-current-user") != "";
+        var i = e.mcOnly;
+        var a = "/ManageContent/GetRecentPostsByUserLink";
+        var n = {
+            searchText: e.titleSearch,
+            page: 1,
+            rows: 50,
+            sidx: "",
+            sord: "asc"
+        };
+        var o = this;
+        var s = function(t) {
+            var i = t.rows;
+            for (var a = 0; a < i.length; a++) {
+                i[a].encoded_title = encodeURIComponent(i[a].title);
+            }
+            e.articles = t.rows;
+        };
+        var r = {
+            loadingSpinContainerId: "ee-ls-article-loading"
+        };
+        SendRequest(a, n, s, 0, r);
+    };
+    t.GetSeriesForInsert = function(e) {
+        var t = this;
+        var i = {
+            loadingSpinContainerId: "ee-ls-bottom-loading"
+        };
+        var a = this.seriesCombo.seriesData;
+        var n = $("#ee-ls-combo-ddi").val();
+        var o = a[n];
+        var s = {
+            series_id: o
+        };
+        var r = "/ManageContent/GetSeries";
+        SendRequest(r, s, e, 0, i);
+    };
+    t.Save = function() {
+        var e = this.seriesCombo;
+        var t = e.getInput().val();
+        var i = e.seriesData[t];
+        var a = this;
+        var n = function(e) {
+            var n = e.series;
+            var o = "";
+            var s = n.results;
+            for (var r = 0; r < s.length; r++) {
+                var l = s[r];
+                l.encodedTitle = encodeURIComponent(l.title);
+                l.rowNum = r + 1;
+                o += HtmlTemplate(HtmlBlocks.EditPageLinkSeriesLink, l);
+            }
+            a.element.Render({
+                seriesName: t,
+                seriesId: i,
+                rowsHtml: o
+            });
+            a.Close();
+        };
+        this.GetSeriesForInsert(n);
+    };
+    t.DeleteSeries = function(e, t) {
+        var i = function(e) {
+            t(e);
+        };
+        var a = this.seriesCombo.seriesData;
+        var n = a[e];
+        var o = {
+            series_id: n
+        };
+        var s = "/ManageContent/DeleteSeries";
+        var r = {
+            loadingSpinContainerId: "ee-ls-bottom-loading"
+        };
+        SendRequest(s, o, i, 0, r);
+    };
+    t.SaveSeries = function(e, t, i, a) {
+        var n = function(e) {
+            a(e);
+        };
+        var o = {
+            name: t,
+            content_ids: i
+        };
+        var s = "/ManageContent/CreateSeries";
+        if (e) {
+            s = "/ManageContent/UpdateSeries";
+            o.series_id = e;
+        }
+        var r = {
+            loadingSpinContainerId: "ee-ls-bottom-loading"
+        };
+        SendRequest(s, o, n, 0, r);
+    };
+    t.GetSeries = function(e) {
+        var t = this;
+        var i = function(t) {
+            var i = t.series;
+            e.seriesName = i.name;
+            var a = i.results;
+            for (var n = 0; n < a.length; n++) {
+                a[n].id = a[n].first_revision;
+            }
+            e.links = a;
+        };
+        var a = {
+            loadingSpinContainerId: "ee-ls-series-loading"
+        };
+        var n = this.seriesCombo.seriesData;
+        var o = $("#ee-ls-combo-ddi").val();
+        var s = e.editId = n[o];
+        var r = {
+            series_id: s
+        };
+        var l = "/ManageContent/GetSeries";
+        SendRequest(l, r, i, 0, a);
+    };
+    t.GetSeriesList = function(e) {
+        var t = this;
+        var i = function(i) {
+            var a = t.seriesCombo = new STComboBox();
+            a.Init("ee-ls-combo");
+            var n = {};
+            for (var o = 0; o < i.length; o++) {
+                var s = i[o];
+                s.text = s.name;
+                s.id = o;
+                n[s.name] = s.series_id;
+            }
+            a.seriesData = n;
+            a.onSelect = function(e, t) {};
+            a.populateList(i);
+            if (e) {
+                e();
+            }
+        };
+        var a = function(e) {
+            i(e.series);
+        };
+        var n = {
+            loadingSpinContainerId: "ee-ls-series-loading"
+        };
+        var o = "/ManageContent/GetSeriesList";
+        SendRequest(o, {}, a, 0, n);
+    };
+    t.SetupModalEvents = function() {
+        this.superclass.SetupModalEvents.apply(this, arguments);
+        var e = this;
+        ui$(this.selectors.addLinkSeriesLink).sortable().disableSelection();
+        $(this.selectors.addLinkSeriesLinkButton).button({
+            icons: {
+                primary: "ui-icon-circle-plus"
+            }
+        }).click(function() {
+            $(e.selectors.addLinkSeriesInput).val("");
+            $(e.selectors.addLinkSeriesModal).attr("data-option-id", "");
+            ui$(e.selectors.addLinkSeriesModal).dialog("open");
+        });
+        $(this.selectors.addLinkSeriesInput).keypress(function(t) {
+            if (t.which == 13) {
+                e.EditLink();
+            }
+        });
+    };
+    t.PreShowModal = function(e) {
+        var t = this.vue;
+        var i = this;
+        var a = e ? null : function() {
+            $("#ee-ls-combo-ddi").val(i.element.data.seriesName);
+        };
+        t.showHome(a);
+    };
+    t.EditLink = function() {
+        var e = $(this.selectors.addLinkSeriesModal).attr("data-option-id");
+        if (e == "") {
+            var t = {
+                addLinkSeriesInput: $(this.selectors.addLinkSeriesInput).val(),
+                id: "sc" + generateGuid()
+            };
+            this.AddLink(t);
+        } else {
+            var i = $(this.selectors.addLinkSeriesInput).val();
+            $("#" + e).find(".surveyChoiceText:first").html(i);
+        }
+        ui$(this.selectors.addLinkSeriesModal).dialog("close");
+    };
+    t.AddLink = function(e) {
+        var t = HtmlTemplate(HtmlBlocks.EditPageLinkSeriesModalLink, e);
+        $(this.selectors.addLinkSeriesLink).append(t);
+        var i = $("#" + e.id);
+        var a = this;
+        i.on("dblclick", function(t) {
+            $(a.selectors.surveyChoiceModal).attr("data-option-id", e.id);
+            ui$(a.selectors.surveyChoiceModal).dialog("open");
+            $(a.selectors.surveyChoiceInput).val($.trim($(this).find(".surveyChoiceText").html()));
+            t.stopPropagation();
+        });
+        i.find(".ui-icon-circle-close :first").click(function() {
+            $(this).closest("li").remove();
+        });
+    };
+    t.SetupModal = function() {
+        this.superclass.SetupModal.apply(this, arguments);
+        this.CreateVue();
+        var e = document.getElementById("ee-ls-links");
+        Sortable.create(e);
+    };
+    return e;
+}();

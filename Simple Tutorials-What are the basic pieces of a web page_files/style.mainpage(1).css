@@ -1,0 +1,366 @@
+
+div#middle {
+    text-align: center;
+    width: 100%;
+    background-color: #151212;
+}
+
+div#middlecontainer {
+    margin-left: auto;
+    margin-right: auto;
+    width: 1024px;
+    text-align: left;
+    padding: 20px 0 20px 0;
+}
+
+#signup {
+    position: absolute;
+    right: 40px;
+    bottom: 32px;
+    z-index: 2;
+}
+
+
+div.type1 {
+    color: #695D60;
+    display: block;
+    font-family: arial;
+    font-size: 1.1em;
+    font-weight: bold;
+    text-align: left;
+}
+
+div.question {
+    margin: 20px 0 0 0;
+}
+
+div.answer {
+    padding: 10px 0 10px 20;
+    margin-right: 70px;
+}
+
+.answer a {
+    color: #6b90da;
+    text-decoration: none;
+}
+
+.type2 {
+    font-family: arial;
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #968554;
+}
+
+table.formtable2 label {
+    color: #695D60;
+    font-family: arial;
+    font-size: 1.2em;
+    font-weight: bold;
+    display: block;
+    text-align: left;
+    margin-bottom: 3px;
+}
+
+table.formtable2 input {
+    color: #960013;
+    font-family: arial;
+    font-size: 1.2em;
+    font-weight: bold;
+    height: 32px;
+}
+
+table.formtable2 > tbody > tr > td {
+    padding-bottom: 20px;
+}
+
+table.formtable3 label {
+    color: #695D60;
+    font-family: arial;
+    font-size: 1.1em;
+    font-weight: bold;
+    text-align: left;
+    margin: 0 3px 3px 0;
+}
+
+table.formtable3 input {
+    color: #960013;
+    font-family: arial;
+    font-size: 1.1em;
+    font-weight: bold;
+    height: 32px;
+}
+
+table.formtable3 > tbody > tr > td {
+    padding-bottom: 15px;
+}
+
+fieldset.type1 {
+    background-color: #EDEDED;
+    border: 0;
+    font-family: arial;
+    font-size: 1em;
+    margin: 0 10px 20px 0px;
+    width: 350px;
+    position: relative;
+    display: block;
+    padding: 20px 10px 20px 10px;
+}
+
+fieldset.type1 label {
+    color: #695D60;
+    font-family: arial;
+    font-size: 1em;
+    font-weight: bold;
+    display: block;
+    text-align: left;
+    margin: 4px 5px 0px 0px;
+}
+
+fieldset.type1 input {
+    font-size: 1em;
+    font-family: arial;
+    width: 300px;
+}
+
+.userCreateContentContainer {
+    padding: 30px;
+    font-size: 1.6em;
+    line-height: 30px;
+    cursor: pointer;
+    border-radius: 7px;
+    /*border: 1px solid #80808C;
+    background-color: #DFEBE3;
+    */
+
+    background: #f3f5ed; /* Old browsers */
+    background: -moz-linear-gradient(top, #f3f5ed 7%, #ffffff 70%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(7%, #f3f5ed), color-stop(70%, #ffffff)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, #f3f5ed 7%, #ffffff 70%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, #f3f5ed 7%, #ffffff 70%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, #f3f5ed 7%, #ffffff 70%); /* IE10+ */
+    background: linear-gradient(to bottom, #f3f5ed 7%, #ffffff 70%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f3f5ed', endColorstr='#fffff9', GradientType=0); /* IE6-9 */
+
+}
+
+.userCreateContentPoints {
+    padding-left: 100px;
+    font-size: 1.3em;
+    line-height: 30px;
+    width: 350px;
+}
+
+.userCreateContentWantTo {
+    font-size: .8em;
+    line-height: 30px;
+}
+
+.userCreateContentFree {
+    font-size: .7em;
+    line-height: 30px;
+    margin-top: 30px;
+}
+
+.userCreateContentFreeText {
+    color: #3C6E36;
+    font-weight: bold;
+}
+
+.createContentButton {
+    font-size: 1.3em;
+    padding: 5px 3px;
+    width: 240px;
+}
+
+.createContentButton .ui-button-text {
+    text-wrap: none;
+}
+
+.inputWide
+{
+    width: 300px;
+}
+
+.createAccountText
+{
+    margin: 10px 0 0 50px;
+}
+
+.jumbo-content
+{
+    padding: 4em 0 6em 0;
+}
+
+.jumbo-container
+{
+    background-color: #696969;
+    border-radius: 14px;
+    padding: 25px 35px 35px 35px;
+    margin: 1em .5em 0 .5em;
+    text-align: left;
+    vertical-align: top;
+    min-height: 230px;
+    position: relative;
+    max-width: 25em;
+}
+
+.jumbo-container a
+{
+    color: white;
+}
+
+
+.jumbo-center
+{
+    margin: 0 auto;
+    max-width: 25em;
+}
+
+.jumbo-first
+{
+    margin-left: 10px;
+}
+
+#jumbotop
+{
+    margin: 45px 0px 30px 0px;
+    text-align: center;
+}
+
+.slogan
+{
+    font-family: 'Open Sans', sans-serif;
+    font-size: 1.8em;
+    color: white;
+    text-align: center;
+    max-width: 20em;
+    margin: 0 auto 1.9em auto;
+    padding: 0 1em;
+}
+
+.jumbo-pad-left
+{
+    margin-left: 35px;
+}
+
+.jumbo-header
+{
+    font-family: 'open_sansregular', Arial;
+    font-weight: bold;
+    font-size: 1.6em;
+    color: white;
+	padding: 0px 0 0px 0;
+    margin: 0 20px 18px 0;
+    text-align: left;
+}
+
+.jumbo-text
+{
+    font-family: 'Open Sans', sans-serif;
+    font-size: 1.3em;
+    color: white;
+}
+
+.jumbo-button-container
+{
+    text-align: right;
+}
+
+.jumbo-button
+{
+    cursor: pointer;
+    padding: 6px 25px;
+    background-color: #00aeff;
+    color: white;
+    font-family: 'open_sansregular', arial;
+    font-weight: bold;
+    font-size: 1.3em;
+    text-decoration: none;
+    box-sizing: border-box;
+    border-radius: 4px;
+    display: inline-block;
+    margin: 25px 0 0px 0;
+    border: 1px solid #00aeff;
+}
+
+
+.jumbo-container2
+{
+    background-color: #696969;
+    border-radius: 18px;
+    padding: 25px 35px 35px 35px;
+    width: 450px;
+    margin: 50px 0 0 80px;
+    font-family: 'open_sansregular', arial;
+    font-weight: bold;
+    color: white;
+}
+
+.formtable4 label
+{
+}
+
+table.formtable4 label {
+    font-size: 1.5em;
+    font-weight: bold;
+    display: block;
+    text-align: left;
+    margin-bottom: 3px;
+}
+
+table.formtable4 input,
+table.formtable4 a,
+table.formtable4 label,
+table.formtable4 .successContainer
+{
+    font-family: "open_sansregular", arial;
+}
+
+table.formtable4 label {
+    margin-top: 5px;
+}
+
+table.formtable4 input {
+    color: #4d4d4d;
+    font-size: 1.3em;
+    font-weight: bold;
+    height: 40px;
+    padding-left: 8px;
+    background-color: #EDEDED;
+    border: 0;
+}
+
+table.formtable4 > tbody > tr > td {
+    padding-bottom: 20px;
+}
+
+.jumbo-container2 label,
+.jumbo-container2 .text1,
+.jumbo-container2 .link1
+{
+    color: white;
+}
+
+.agreeToTermsContainer .text1
+{
+    margin-left: 5px;
+}
+
+.jumbo-container2 .jumbo-header
+{
+    margin-bottom: 25px;
+}
+
+.jumbo-container2 #successContainer
+{
+    color: white;
+    font-size: 1.6em;
+    margin-bottom: 20px;
+}
+
+.successBold
+{
+    color: #00aeff;
+    font-weight: bold;
+    font-size: 1.3em;
+}

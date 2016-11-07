@@ -1,0 +1,636 @@
+
+
+function ShowContentHelper() {}
+
+ShowContentHelper.prototype.Init = function() {
+    this.selectors = {
+        addContentFooter: '#addContentFooter'
+    };
+};
+
+ShowContentHelper.prototype.InitVotingDialogs = function() {
+    $(this.selectors.addContentFooter).append();
+};
+
+ShowContentHelper.prototype.VoteUpContent = function(contentId, updateVoteId, onComplete) {
+    var requestData = {
+        contentId: contentId
+    };
+
+    var self = this;
+    var userIsLoggedIn = $('#contentData').attr('data-current-user') != "";
+    var updateNumId = userIsLoggedIn ? updateVoteId : (updateVoteId + '_anon');
+
+    if(this.hasVoted && this.hasVoted[updateNumId]) {
+        return;
+    }
+
+    var onSuccess = function(data) {
+        if (data.success == false) {
+            if(data.message == 'voted') {
+                alert('Sorry, you have already voted for this content.');
+                return;
+            }
+
+            alert('Sorry, a system error has occurred. Please try again later.');
+            return;
+        }
+        self.hasVoted = self.hasVoted || {};
+        self.hasVoted[updateNumId] = true;
+
+        $('#voteup_content_button').addClass('voteup_text_thanks');
+        $('#voteup_content_button .voteup_text').html('Thank you.');
+        $('#voteup_content_button .voteup_icon').hide();
+
+        var $updateNum = $('#' + updateNumId);
+        var numUpvotes = $updateNum.html();
+        $updateNum.html((numUpvotes*1) + 1);
+
+        //$('#voteup_question_container').fadeOut();
+
+        $('#voteSuccessRemoveVote').attr('data-id', contentId);
+        //self.VoteSuccessFadeModal();
+
+        if(onComplete) {
+            onComplete();
+        }
+    };
+
+    SendRequest(userIsLoggedIn ? '/Content/AddUpvote' : '/Home/AddAnonUpvote', requestData, onSuccess, 1);
+};
+
+ShowContentHelper.prototype.VoteSuccessFadeModal = function() {
+    ui$("#voteSuccessModal").dialog({
+        show: {effect: 'fade', duration: 500},
+        hide: {effect: 'fade', duration: 500},
+        dialogClass: 'ui-dialog-fade'
+    });
+    var fadeVoteSuccessModal = function() {
+        ui$("#voteSuccessModal").dialog('close');
+    };
+    setTimeout(fadeVoteSuccessModal, 2500);
+};
+
+ShowContentHelper.prototype.InitRevise = function() {
+    $('#moderate-content').on('click', function() {
+        var id = $('#contentData').attr('data-latest-revision');
+        location.href = '/Moderator/EditJson/' + id;
+    });
+
+    $('#revise-content').on('click', function() {
+        var id = $('#contentData').attr('data-latest-revision');
+        location.href = '/ManageContent/Create?id=' + id;
+    });
+};
+
+ShowContentHelper.prototype.InitVoting = function() {
+    var self = this;
+
+    var voteRemoveFadeModal = function() {
+        ui$("#voteRemoveModal").dialog({
+            show: {effect: 'fade', duration: 500},
+            hide: {effect: 'fade', duration: 500},
+            dialogClass: 'ui-dialog-fade'
+        });
+        var fadeVoteRemoveModal = function() {
+            ui$("#voteRemoveModal").dialog('close');
+        };
+        setTimeout(fadeVoteRemoveModal, 1500);
+    };
+
+    var voteUpContent = function(contentId, updateVoteId, onComplete) {
+        self.VoteUpContent(contentId, updateVoteId, onComplete);
+    };
+
+    $('#voteup_content_button').on('click', function() {
+        $(this).hide();
+        $('#voteup-loading').show();
+
+        var voteComplete = function() {
+            $('#voteup-message').show();
+            $('#voteup-loading').hide();
+        };
+        voteUpContent($('#contentData').attr('data-id'), 'votestat_tutorial_number', voteComplete);
+    });
+
+    $('#votestat_question').on('click', function() {
+        voteUpContent($('#contentData').attr('data-id'), 'votestat_tutorial_number');
+    });
+
+    $('.comment_voteup_text_gray').attr('id', _.uniqueId()).on('click', function() {
+        var voteUpText = $(this).find('.comment_voteup_text_member');
+        $(voteUpText).uniqueId();
+        $(this).find('.comment_voteup_text_anon').attr('id', $(voteUpText).attr('id') + '_anon');
+        voteUpContent($(this).attr('data-id'), $(voteUpText).attr('id'));
+    });
+
+    var isUserLoggedIn = $('#contentData').attr('data-current-user') != "";
+    $('#voteSuccessRemoveVote').on('click', function() {
+        var contentId = $('#voteSuccessRemoveVote').attr('data-id');
+
+        var requestData = {
+            contentId: contentId
+        };
+
+        var onSuccess = function(data) {
+            if (data.success == false) {
+                alert('Sorry, a system error has occurred. Please try again later.');
+                return;
+            }
+
+            voteRemoveFadeModal();
+
+            var numUpvotes = $('#votestat_tutorial_number').html();
+            $('#votestat_tutorial_number').html((numUpvotes*1) - 1);
+        };
+        SendRequest('/Content/RemoveUpvote', requestData, onSuccess, 1);
+    }).toggle(isUserLoggedIn);
+};
+
+ShowContentHelper.prototype.InitTagging = function() {
+    var self = this;
+
+    if(!IsModerator()) {
+        return;
+    }
+
+    $('#contentTagsAdmin').show(); //TODO: JRJ
+    ui$('#tags').tagsInput({
+        autocomplete_url: '/ManageContent/GetTagsSearch' //[{"id":"Nycticorax nycticorax","label":"Black-crowned Night Heron","value":"Black-crowned Night Heron"},
+    });
+
+    var self = this;
+
+    $('#tagsSubmitButton').on('click', function() {
+        var onSuccess = function(response) {
+            if(!response.success) {
+                alert('Error saving tags');
+                return;
+            }
+        };
+
+        var requestData = {
+            contentId: $('#contentData').attr('data-id'),
+            tagNames: $('#tags').val()
+        };
+        SendRequest('/ManageContent/SaveTagsForContent', requestData, onSuccess, 0);
+    });
+
+    var onSuccess = function(response) {
+        if(!response.success) {
+            alert('Error retrieving tags');
+            return;
+        }
+        $('#tags').val(response.tags.join(','));
+    };
+
+    var requestData = {
+        contentId: $('#contentData').attr('data-id')
+    };
+    SendRequest('/ManageContent/GetTagsForContent', requestData, onSuccess, 0);
+};
+
+ShowContentHelper.prototype.InitDownloadButtons = function() {
+    $('.download_button').click(function() {
+        var folderGuid = $(this).attr('data-folder-guid');
+        var fileName = $(this).attr('data-file');
+
+        var win=window.open('/uploads/{0}/{1}'.format(folderGuid, fileName), '_blank');
+        win.focus();
+    })
+};
+
+
+function SignupHelper() {}
+
+
+SignupHelper.prototype.OpenEmailDialog = function() {
+    ui$(this.selectors.emailDialog).dialog('open');
+};
+
+SignupHelper.prototype.CloseEmailDialog = function() {
+    ui$(this.selectors.emailDialog).dialog('close');
+};
+
+
+
+SignupHelper.prototype.RegisterOrSignin = function(email) {
+    if(!$('#agreeToTerms' + this.id).prop('checked')) {
+        alert('You must agree to the terms of service to comment.');
+        return;
+    }
+
+    var $spamData = $('#spam-data');
+    var requestData = {
+        email: email,
+        ts: $spamData.attr('data-spam-ts'),
+        answer: $('#spam_answer' + this.id).val(),
+        iv: $spamData.attr('data-spam-iv')
+    };
+
+    var self = this;
+    var onSuccess = function(response) {
+        if(response.success) {
+            //new user registration, tell them to click the verify link and then submit from here
+            ui$(self.selectors.newUserPasswordDialog).dialog('open');
+        } else {
+            if(response.error == 'EmailAlreadyExistsException') {
+                //user already exists, make them sign in
+                ui$(self.selectors.emailDialog).dialog('close');
+                ui$(self.selectors.passwordDialog).dialog('open');
+            }
+        }
+    };
+    SendRequest('/Home/SignupSubmit', requestData, onSuccess, 0);
+}
+
+SignupHelper.prototype.SignInAndSaveComment = function(isNewUser, saveCallback) {
+    var requestData = {
+        email: $(this.selectors.email).val()
+    };
+
+    requestData.password = isNewUser ? $(this.selectors.newUserPassword).val() : $(this.selectors.password).val();
+    requestData.isNewUser = isNewUser;
+
+    var self = this;
+    var onSuccess = function() {
+        saveCallback();
+    }
+
+    SendRequest(SiteUrl('/Home/LoginSubmitAjax'), requestData, onSuccess, 0, null);
+}
+
+SignupHelper.prototype.AddSelectors = function(values, id) {
+    this.selectors = this.selectors ? this.selectors : {};
+    for(var key in values) {
+        if(!values.hasOwnProperty(key)) {
+            continue;
+        }
+        if(this.selectors[key]) {
+            alert('Key {0} already exists in selectors map'.format(key));
+        }
+        this.selectors[key] = values[key] + id;
+    }
+}
+
+
+
+function ShowSurveyHelper() {}
+
+ShowSurveyHelper.prototype = new ShowContentHelper;
+ShowSurveyHelper.prototype.superclass = ShowContentHelper.prototype;
+
+ShowSurveyHelper.prototype.InitSurveyVoting = function() {
+    var self = this;
+    var surveyVoteSuccessFadeModal = function() {
+        /*
+        $("#surveyVoteSuccessModal").dialog({
+            show: {effect: 'fade', duration: 500},
+            hide: {effect: 'fade', duration: 500},
+            dialogClass: 'ui-dialog-fade'
+        });
+        var fadeModal = function() {
+            $("#surveyVoteSuccessModal").dialog('close');
+        };
+        setTimeout(fadeModal, 2500);
+        */
+        var $div = $('<div class="alert-container">' +
+            '<div class="alert alert-success alert-fade-slow" role="alert">'
+            + 'Thanks! You have voted successfully.</div></div>').appendTo('body');
+
+        $div.fadeOut(3000);
+        /*setTimeout(function() {
+            $div.fadeOut();
+        }, 1000);*/
+    };
+
+    $('#contentTagText').html('User Survey');
+    $('#contentTag').show();
+    $('#surveyLegend').show();
+
+    var getVotes = function() {
+        var requestData = {
+            contentId: $('#contentData').attr('data-id')
+        };
+
+        var onSuccess = function(data) {
+            if (data.success == false) {
+                alert('Sorry, a system error has occurred. Please try again later.');
+                return;
+            }
+            var votes = data.votes;
+            if(!votes) {
+                alert('No votes were returned on the response.')
+                return;
+            }
+
+            var memberVoteBoxes = $('#survey_choices').find('.survey_option_votes');
+
+            for(var i=0; i < memberVoteBoxes.length; i++) {
+                var box = memberVoteBoxes[i];
+                $(box).attr('data-option', i);
+
+                var key = i.toString();
+                $(box).html(votes['member'].hasOwnProperty(key) ? votes['member'][key] : 0);
+            }
+
+            var anonVoteBoxes = $('#survey_choices').find('.survey_option_anon_votes');
+
+            for(var i=0; i < anonVoteBoxes.length; i++) {
+                var box = anonVoteBoxes[i];
+                $(box).attr('data-option', i);
+
+                var key = i.toString();
+                $(box).html(votes['anon'].hasOwnProperty(key) ? votes['anon'][key] : 0);
+            }
+        }
+
+        SendRequest('/Content/GetSurveyVotes', requestData, onSuccess, 1);
+    };
+    getVotes();
+
+    $('#survey_choices').find('.survey_row').on('click', function() {
+        var votedForOption = this;
+
+        var requestData = {
+            contentId: $('#contentData').attr('data-id'),
+            optionId: $(this).find('input[type=radio]:first').val()
+        };
+
+        var onSuccess = function(data) {
+            if (data.success == false) {
+                alert('Sorry, a system error has occurred. Please try again later.');
+                return;
+            }
+
+            getVotes();
+            surveyVoteSuccessFadeModal();
+
+            window.surveyVoteSuccess = true;
+            /*
+            var $voteBox = $(votedForOption).find('.survey_option_votes').first();
+            var numUpvotes = $voteBox.html();
+            $voteBox.html(numUpvotes ? numUpvotes + 1 : 1);
+            */
+        }
+
+        if(window.surveyVoteSuccess) {
+            alert('Thank you! You have voted successfully.');
+            return;
+        }
+        SendRequest('/Content/AddSurveyVote', requestData, onSuccess, 1);
+    });
+};
+
+$(document).ready(function () {
+
+    new Vue({
+        el: '#lessonsEmail',
+        methods: {
+            onSuccess: function(data) {
+                this.isSuccessVisible = true;
+            },
+            onSubmit: function (evt) {
+                this.isFormVisible = false;
+
+                var requestData = {
+                    email: this.email
+                };
+
+                var self = this;
+                var onSuccess = function(data) {
+                    if (data.success == false) {
+                        self.isFormVisible = true;
+                        alert('Sorry, a system error has occurred. Please try again later.');
+                        return;
+                    }
+                    self.onSuccess(data);
+                };
+
+                var options = {
+                    loadingSpinContainerId: 'lessons-email-spinner'
+                };
+                SendRequest('/Home/EmailConnectSubmit', requestData, onSuccess, 1, options);
+            }
+        },
+        data: {
+            email: '',
+            isFormVisible: true,
+            isSuccessVisible: false
+        }
+    });
+
+
+    var contentType = $('#contentData').attr('data-type');
+
+    if((contentType == 2) || (contentType == 4)) { //comment
+
+        if(contentType == 4) {
+            $('#contentTagText').html('User Profile');
+            $('#contentTag').show();
+        }
+        $('#usercomments_header').hide();
+        $('#voteup_question_container').hide();
+        return;
+    } else if(contentType == 3) { //survey
+        var showSurvey = new ShowSurveyHelper();
+        showSurvey.InitSurveyVoting();
+    }
+
+    $('.toggle-collapse').on('click', function() {
+        $('#' + $(this).attr('data-target')).toggle();
+    });
+/*
+    var commentHelper = new CommentHelper();
+    commentHelper.Init();
+
+    commentHelper.RenderPublishModal();
+    commentHelper.RenderDoneEditingModal();
+
+    commentHelper.contentId = $('#contentData').attr('data-id');
+    commentHelper.RenderUserInterface();
+
+
+
+    var userContent = commentHelper.userContent = new UserContent();
+    userContent.Init(commentHelper);
+    */
+
+    var showContent = new ShowContentHelper();
+    showContent.Init();
+    showContent.InitVoting();
+    showContent.InitRevise();
+    showContent.InitDownloadButtons();
+    showContent.InitTagging();
+
+    //
+    // Comment input
+    //
+    $('#ask-user-content').html(UCBlocks.UCContainer);
+    var buttonData = {
+        text: 'Add code (optional)',
+        id: 'uc-add-code'
+    };
+    $('#uc-buttons').html(HtmlTemplate(UCBlocks.UCButton, buttonData));
+    var textPrefix = _.uniqueId();
+    $('#uc-content-area').html(HtmlTemplate(UCBlocks.UCText, {prefix: textPrefix}));
+
+    $('#' + textPrefix + '-uc-link').on('click', function() {
+        var id = $(this).attr('data-toggle-id');
+        $('#' + id).toggle();
+    });
+
+    $('.comment-mod-button').toggle(IsModerator()).on('click', function() {
+        location.href = '/Moderator/EditJson/' + $(this).attr('data-id');
+    });
+
+    $('.st-toggle').on('click', function() {
+        var toggleClass = $(this).attr('data-toggle-class');
+        if(toggleClass) {
+            $(this).find('.' + toggleClass).toggle();
+        }
+    });
+
+    var createCombo = function(prefix) {
+        var combo = new STComboBox();
+        combo.Init(prefix + '-combo');         //ID of a <span> or <div>
+        var langs = [];
+
+        var i=0;
+        _.each(EditDialogCode.languages, function(value, key) {
+            langs.push({id: i++, text: key});
+        });
+
+        combo.onSelect = function(evt, value) {
+        };
+        combo.populateList(langs);
+    };
+
+    $('#uc-add-code').on('click', function() {
+        if($(this).html() != 'Add code') {
+            $(this).html('Add code');
+            var textButtonData = {
+                text: 'Add text',
+                id: 'uc-add-text'
+            };
+            $('#uc-buttons').append(HtmlTemplate(UCBlocks.UCButton, textButtonData));
+            $('#uc-add-text').on('click', function() {
+                var $c = $('#uc-content-area');
+                var containerData = {
+                    prefix: _.uniqueId(),
+                    content: HtmlTemplate(UCBlocks.UCText, {prefix: _.uniqueId()})
+                };
+                $c.append(HtmlTemplate(UCBlocks.UCCloseContainer, containerData));
+
+                var $textContainer = $('#' + containerData.prefix + '-container');
+                $textContainer.find('.uc-close-btn').first().on('click', function() {
+                    $textContainer.remove();
+                });
+            });
+        }
+
+        var prefix = _.uniqueId();
+        $('#uc-content-area').append(HtmlTemplate(UCBlocks.UCCode, {prefix: prefix}));
+        createCombo(prefix);
+
+        var $container = $('#' + prefix + '-container');
+        $container.find('.uc-close-btn').first().on('click', function() {
+            $container.remove();
+        });
+    });
+
+    if(GetLoggedInUser()) {
+        $('#agree-terms-container').hide();
+    }
+
+    $('#submitButton').on('click', function() {
+        if(!GetLoggedInUser() && !$('#agreeToTerms').prop('checked')) {
+            alert('You must agree to the terms of service in order to comment.');
+            return false;
+        }
+
+        var spamAnswer = $.trim($('#spam_answer').val());
+        if(spamAnswer == '') {
+            alert('Please enter an answer to the spam prevention question.');
+            return false;
+        }
+
+        var $spamData = $('#spam-data');
+
+        var elements = [];
+
+        /*
+        elements.push({
+            'type': 1,
+            'title': '',
+            'id': generateGuid()
+        });
+        */
+
+        $('.uc-element').each(function() {
+            var type = $(this).attr('data-element-type');
+            switch(type) {
+                case 'code':
+                    var lang = EditDialogCode.languages[$(this).find('input').first().val()];
+                    var code = $(this).find('textarea').first().val();
+                    elements.push({
+                        'type': 3,
+                        'code': code,
+                        'language': lang,
+                        'id': generateGuid()
+                    });
+                    break;
+                case 'text':
+                    elements.push({
+                        'type': 4,
+                        'html': $(this).val(),
+                        'id': generateGuid()
+                    });
+                    break;
+                default:
+                    alert('Error in form element type.');
+            }
+        });
+
+        var requestData = {
+            parentId: $('#contentData').attr('data-id'),
+            firstRevision: this.firstRevision,
+            previousRevision: this.contentId,
+            jsonContent: JSON.stringify(elements),
+            ts: $spamData.attr('data-spam-ts'),
+            answer: spamAnswer,
+            iv: $spamData.attr('data-spam-iv')
+        };
+
+        var onSuccess = function(data) {
+            if (data.success == false) {
+                if('error' in data && (data.error == "SpamAnswerIncorrectException")) {
+                    alert('Your answer to the spam prevention question was incorrect. Please try again.');
+                    return;
+                }
+                alert('Sorry, a system error has occurred. Please try again later.');
+                return;
+            }
+            $('#ask-comment-form').hide();
+            $('#ask-tweet').val('I just commented on: ' + window.location.href);
+            $('#ask-tweet-submit').on('click', function() {
+                var url = "https://twitter.com/intent/tweet?url={0}&text={1}&via=simptutorials"
+                    .format(window.location.href, encodeURIComponent($('#ask-tweet').val()));
+                var win = window.open(url, '_blank');
+                win.focus();
+            });
+
+            $('#container-ask').hide();
+            $('#ask-success-container').show();
+        };
+
+        var options = {
+            loadingSpinContainerId: 'ask-load-spinner'
+        };
+        SendRequest('/Home/SaveComment', requestData, onSuccess, 1, options);
+        return false;
+    });
+
+    var spamQuestion = $('#spam-data').attr('data-spam-question');
+    $('#spam_question').html(spamQuestion +'<span class="subtle" style="margin-left: 10px;">(spam prevention)</span>');
+});

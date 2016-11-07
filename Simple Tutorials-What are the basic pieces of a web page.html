@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<!-- saved from url=(0077)https://simpletutorials.com/c/2262/What+are+the+basic+pieces+of+a+web+page%3F -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Simple Tutorials</title>
+  <noscript>Your browser does not support JavaScript!</noscript>
+
+  <link rel="stylesheet" href="./Simple Tutorials-What are the basic pieces of a web page_files/style.css">
+  <link rel="stylesheet" href="./Simple Tutorials-What are the basic pieces of a web page_files/style.mainpage.css">
+
+  <style>html, * {-webkit-user-select:text!important; -moz-user-select:text!important;}</style><script src="./Simple Tutorials-What are the basic pieces of a web page_files/st.js.下载"></script>
+  <script src="./Simple Tutorials-What are the basic pieces of a web page_files/vue.min.js.下载"></script>
+  <script src="./Simple Tutorials-What are the basic pieces of a web page_files/1.js.下载"></script>
+
+  <!--
+  <script src="/static/js/jquery/jquery-ui-1.10.3.custom.min.js"></script>
+  -->
+  <link rel="stylesheet" href="./Simple Tutorials-What are the basic pieces of a web page_files/jquery-ui-1.10.3.custom.css">
+  <script src="./Simple Tutorials-What are the basic pieces of a web page_files/jqGridWrapper.js.下载"></script>
+
+  <script src="./Simple Tutorials-What are the basic pieces of a web page_files/bootstrap.min.js.下载"></script>
+  <link rel="stylesheet" href="./Simple Tutorials-What are the basic pieces of a web page_files/bootstrap.css">
+
+  <link href="./Simple Tutorials-What are the basic pieces of a web page_files/jquery.loadmask.css" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="./Simple Tutorials-What are the basic pieces of a web page_files/ui.jqgrid.css">
+  <link rel="stylesheet" href="./Simple Tutorials-What are the basic pieces of a web page_files/ui.multiselect.css">
+
+  <link href="./Simple Tutorials-What are the basic pieces of a web page_files/stylesheet.css" rel="stylesheet" type="text/css">
+  <link href="./Simple Tutorials-What are the basic pieces of a web page_files/editor.css" rel="stylesheet" type="text/css">
+
+  <script src="./Simple Tutorials-What are the basic pieces of a web page_files/layout.js.下载"></script>
+
+  <!--
+  <script src="/script/1"></script>
+  -->
+
+  
+<link rel="stylesheet" href="./Simple Tutorials-What are the basic pieces of a web page_files/pure-min.css">
+
+<link href="./Simple Tutorials-What are the basic pieces of a web page_files/style.mainpage(1).css" rel="stylesheet" type="text/css">
+<link href="./Simple Tutorials-What are the basic pieces of a web page_files/default.css" rel="stylesheet" type="text/css">
+
+<script src="./Simple Tutorials-What are the basic pieces of a web page_files/3.js.下载"></script>
+<script src="./Simple Tutorials-What are the basic pieces of a web page_files/CommentHelper.js.下载"></script>
+
+<link href="./Simple Tutorials-What are the basic pieces of a web page_files/show.css" rel="stylesheet" type="text/css">
+
+<link href="./Simple Tutorials-What are the basic pieces of a web page_files/loaders.css" rel="stylesheet" type="text/css">
+<script src="./Simple Tutorials-What are the basic pieces of a web page_files/loaders.css.js.下载"></script>
+
+<script src="./Simple Tutorials-What are the basic pieces of a web page_files/ask.blocks.js.下载"></script>
+
+<script src="./Simple Tutorials-What are the basic pieces of a web page_files/stcombobox.js.下载"></script>
+<link href="./Simple Tutorials-What are the basic pieces of a web page_files/stcombobox.css" rel="stylesheet" type="text/css">
+
+<script src="./Simple Tutorials-What are the basic pieces of a web page_files/show.js.下载"></script>
+
+
+
+
+<style id="style-1-cropbar-clipper">/* Copyright 2014 Evernote Corporation. All rights reserved. */
+.en-markup-crop-options {
+    top: 18px !important;
+    left: 50% !important;
+    margin-left: -100px !important;
+    width: 200px !important;
+    border: 2px rgba(255,255,255,.38) solid !important;
+    border-radius: 4px !important;
+}
+
+.en-markup-crop-options div div:first-of-type {
+    margin-left: 0px !important;
+}
+</style></head>
+
+<body style="position: static;">
+<div id="site-data" data-is-prod="" data-is-mod="" data-user-id="" data-logged-in="0"></div>
+<div id="spam-data" data-spam-ts="lf7uAcHejgS8ULxYJiPuoqju9qYgW90NLC0ZV4AYg8FBjHGEV+QbzYYmYo0LOmo2yH43EdziYvZWqn5anUiuTOht1VSZ2r2/XnFqKYVleLQ1V0lyPiZGCw/bP20tPway" data-spam-question="What color are baby ducklings? [answer is yellow]" data-spam-iv="nH63P1271b2xDT2Io/SApw=="></div>
+
+<nav class="navbar navbar-default" id="top-nav">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" id="custom-brand" href="https://simpletutorials.com/Home/Index"></a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        
+        <li id="nav-link-home"><a href="https://simpletutorials.com/Home/Index">Home</a></li>
+        <li id="nav-link-learn"><a href="https://simpletutorials.com/Home/Tutorials">Learn</a></li>
+        <li id="nav-link-ask"><a href="https://simpletutorials.com/Home/Ask">Discuss</a></li>
+        
+
+        <!--
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href="#">Action</a></li>
+            <li><a href="#">Another action</a></li>
+            <li><a href="#">Something else here</a></li>
+            <li role="separator" class="divider"></li>
+            <li><a href="#">Separated link</a></li>
+            <li role="separator" class="divider"></li>
+            <li><a href="#">One more separated link</a></li>
+          </ul>
+        </li>
+        -->
+      </ul>
+
+      <ul class="nav navbar-nav navbar-right">
+        <!--
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href="#">Action</a></li>
+            <li><a href="#">Another action</a></li>
+            <li><a href="#">Something else here</a></li>
+            <li role="separator" class="divider"></li>
+            <li><a href="#">Separated link</a></li>
+          </ul>
+        </li>
+        -->
+        <form class="navbar-form navbar-left" role="search">
+          <div class="form-group">
+            <input id="searchTitles" type="text" class="form-control" placeholder="Search Articles">
+          </div>
+          <button id="searchTitlesButton" type="submit" class="btn btn-default">GO</button>
+        </form>
+        
+          <li><a href="https://simpletutorials.com/Home/Signup">Signup</a></li>
+          <li><a href="https://simpletutorials.com/Home/Login">Login</a></li>
+        
+      </ul>
+
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+
+
+
+
+
+
+
+<div class="container-fluid">
+  <div class="row  content-bg">
+    <div class="col-lg-7 col-md-8">
+
+      <div id="content-section" class="bodyexpandmax">
+        <div id="contentData" data-id="2262" data-first-revision="1253" data-current-user="" data-type="1" data-latest-revision="2395">
+        </div>
+
+        <div id="votestat-question-container">
+          <div class="content-vote">
+            <span class="votes-label">Upvotes</span>
+            <span class="label label-primary">Anonymous 8</span>
+            <span class="label label-success">User 1</span>
+
+            <!--
+            <table cellspacing="0" cellpadding="0" id="votestat_question" data-id="2262">
+              <tr>
+                <td class="votestat_anon_td" title="Anonymous Votes">
+                 <div class="votestat_question_number votestat_question_number_anon" id="votestat_tutorial_number_anon">8</div>
+                </td>
+                <td title="Member Votes">
+                 <div class="votestat_question_number votestat_question_number_member" id="votestat_tutorial_number">1</div>
+                </td>
+                <td>
+                 <div class="voteup_icon"></div>
+                </td>
+              </tr>
+            </table>
+            -->
+          </div>
+        </div>
+
+
+
+        <table cellspacing="0" cellpadding="0">
+         <tbody><tr>
+           <td>
+               <table id="contentTag" cellspacing="0" cellpadding="0" style="display: none">
+                 <tbody><tr>
+                   <td id="contentTagText">
+                   </td>
+                 </tr>
+                </tbody></table>
+           </td>
+           <td>
+               <table id="surveyLegend" cellspacing="0" cellpadding="0" style="display: none">
+                 <tbody><tr>
+                   <td>
+                       <div class="surveyLegendBlue"></div>
+                   </td>
+                   <td>
+                       <span class="surveyLegendText">Member votes</span>
+                   </td>
+                   <td class="surveyLegendSpace">
+                       <div class="surveyLegendGreen"></div>
+                   </td>
+                   <td>
+                       <span class="surveyLegendText">Anonymous votes</span>
+                   </td>
+                 </tr>
+
+                </tbody></table>
+           </td>
+         </tr>
+        </tbody></table>
+
+
+        
+<h1>What are the basic pieces of a web page?</h1>
+<div id="content-created-info">
+  <div id="votestat-createdby-container">
+      <a href="https://simpletutorials.com/u/68" class="contentUser">By jasonj</a>
+  </div>
+  <div id="votestat-date-container">
+    <div class="contentDateCreated">Dec 5, 2015 01:41</div>
+  </div>
+</div>
+
+
+<div class="viewableElement">
+  <div class="textblock"><div>Want to create web pages? You'll want to learn <span class="st-editor-italic">HTML</span>, <span class="st-editor-italic">CSS</span>, and <span class="st-editor-italic">JavaScript</span>. Let's learn what each language does.<br></div></div>
+</div>
+
+
+<div class="header">HTML - HyperText Markup Language</div>
+
+
+<div class="viewableElement">
+  <div class="textblock"><span><a class="st-editor-link" href="https://developer.mozilla.org/en-US/docs/Web/HTML">HTML</a> is a language that puts elements (text, images, links, etc.) on a webpage.<br><br>It's easy to think about <span class="st-editor-bold">HTML</span> as being the<span class="st-editor-bold"> frame of a house</span>.</span></div>
+</div>
+
+
+<div class="pure-g">
+  <div class="pure-u-1 viewableElement">
+      <a href="https://simpletutorials.com/uploads/1253/d3f6469c-2064-11e5-b5de-f23c91df6128.jpg" target="_blank" class="ep-image-link">
+        <img src="./Simple Tutorials-What are the basic pieces of a web page_files/d3f6469c-2064-11e5-b5de-f23c91df6128.thumbnail.jpg" class="ep-image pure-img">
+      </a>
+     <span class="ep-image-text"></span>
+  </div>
+</div>
+
+
+<div class="header">CSS - Cascading Style Sheets</div>
+
+
+<div class="viewableElement">
+  <div class="textblock"><span><a class="st-editor-link" href="https://developer.mozilla.org/en-US/docs/Web/CSS">CSS</a> is a language for <span class="st-editor-bold">styling</span> HTML elements. You can style elements with <span class="st-editor-bold">color, size, padding, etc</span>.<br><br>It's easy to think about CSS as <span class="st-editor-italic">coloring </span>the framed house.</span></div>
+</div>
+
+
+<div class="pure-g">
+  <div class="pure-u-1 viewableElement">
+      <a href="https://simpletutorials.com/uploads/1253/a1c22dd8-2066-11e5-bccb-f23c91df6128.jpg" target="_blank" class="ep-image-link">
+        <img src="./Simple Tutorials-What are the basic pieces of a web page_files/a1c22dd8-2066-11e5-bccb-f23c91df6128.thumbnail.jpg" class="ep-image pure-img">
+      </a>
+     <span class="ep-image-text"></span>
+  </div>
+</div>
+
+
+<div class="header">JavaScript</div>
+
+
+<div class="viewableElement">
+  <div class="textblock"><span><a class="st-editor-link" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript">JavaScript</a> is a language for <span class="st-editor-bold">actions</span><span class="st-editor-italic"> </span>on web pages, such as displaying popup menus when a user hovers over an element, or showing the user a message when they click something on the screen.<br><br>JavaScript is like <span class="st-editor-bold">wiring the house up for electricity</span> so that lights can be turned on.</span></div>
+</div>
+
+
+<div class="pure-g">
+  <div class="pure-u-1 viewableElement">
+      <a href="https://simpletutorials.com/uploads/1253/0f976380-21a9-11e5-bccb-f23c91df6128.jpg" target="_blank" class="ep-image-link">
+        <img src="./Simple Tutorials-What are the basic pieces of a web page_files/0f976380-21a9-11e5-bccb-f23c91df6128.thumbnail.jpg" class="ep-image pure-img">
+      </a>
+     <span class="ep-image-text"></span>
+  </div>
+</div>
+
+
+<div class="viewableElement">
+  <div class="textblock"><span><span class="st-editor-bold"><br><br>Next</span>: <a class="st-editor-link" href="https://simpletutorials.com/c/2245/Introduction%20to%20HTML">Introduction to HTML</a><br></span></div>
+</div>
+
+
+
+
+
+        <!--
+        <div id="usercomments_header">
+          Comments
+        </div>
+        -->
+
+        <!--
+        <div id="contentDashBox">
+          <div id="commentInfoBar"></div>
+          <div id="addContentContainer"></div>
+          <div id="addContentFooter">
+          </div>
+          <div id="commentSuccess" style="display: none">Thank you! Your comment has been submitted.</div>
+        </div>
+        -->
+      </div>
+      <div class="bodyexpandmax1">
+
+        <div id="voteup_question_container">
+          <div id="content-options">
+            
+
+            
+
+          </div>
+          <div id="content-voteup">
+            <div class="voteup_question">Was this helpful?</div>
+
+            <!--
+            <button id="voteup_content_button" class="btn btn-default">
+              <div class="voteup_text">vote</div>
+              <div class="voteup_icon"></div>
+            </button>
+            -->
+            <button id="voteup_content_button" type="button" class="btn btn-default">vote up</button>
+            <span id="voteup-loading" class="loader-inner ball-pulse" style="display: none"><div></div><div></div><div></div></span>
+            <span id="voteup-message" style="display: none">Thanks! Your feedback is appreciated.</span>
+
+            <!--
+            <div id="voteup_content_button" class="voteup_text_gray" data-id="2262">
+              <div class="voteup_text">vote</div>
+              <div class="voteup_icon"></div>
+            </div>
+            -->
+
+          </div>
+        </div>
+
+        <div id="contentTags" class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">Tags</h3>
+          </div>
+          <div class="panel-body">
+            <div id="contentTagContainer">
+<a href="https://simpletutorials.com/Home/Content?t=16" class="genTagBox">
+  <div class="btn btn-default">Beginner</div>
+</a>
+
+
+
+<a href="https://simpletutorials.com/Home/Content?t=1" class="genTagBox">
+  <div class="btn btn-default">CSS</div>
+</a>
+
+
+
+<a href="https://simpletutorials.com/Home/Content?t=5" class="genTagBox">
+  <div class="btn btn-default">HTML</div>
+</a>
+
+
+
+<a href="https://simpletutorials.com/Home/Content?t=6" class="genTagBox">
+  <div class="btn btn-default">JavaScript</div>
+</a>
+
+
+</div>
+          </div>
+        </div>
+
+
+
+
+      </div>
+
+      <div id="comment-section" class="bodyexpandmax">
+        <h1>Comments</h1>
+
+        
+
+        <div id="ask-comment-form">
+          <h2>Leave a Comment</h2>
+          <div>
+            <div id="ask-user-content"><div id="uc-container"><div id="uc-content-area"><div class="uc-form-margintop uc-details"><textarea class="form-control uc-element" rows="12" placeholder="Type your comment here..." data-element-type="text"></textarea><div class="uc-format-help-container">* <a id="2-uc-link" class="uc-link" data-toggle-id="2-format-table-container">Show HTML formatting tips.</a><div class="uc-format-table-container" id="2-format-table-container" style="display: none"><table class="uc-format-help" id="2-format-help"><tbody><tr><td>&lt;b&gt;Bold&lt;/b&gt;</td><td class="uc-html-preview"><b>Bold</b></td></tr><tr><td>&lt;i&gt;Italics&lt;/i&gt;</td><td class="uc-html-preview"><i>Italics</i></td></tr><tr><td>&lt;em&gt;Highlight&lt;/em&gt;</td><td class="uc-html-preview"><span class="uc-hl">Highlight</span></td></tr><tr><td>&lt;a href="http://t.co"&gt;t.co&lt;/a&gt;</td><td class="uc-html-preview"><a href="http://t.co/">t.co</a></td></tr><tr><td>&lt;h&gt;Header&lt;/h&gt;</td><td class="uc-html-preview">Header</td></tr></tbody></table></div></div></div></div><div id="uc-buttons"><button id="uc-add-code" class="btn btn-default" type="button">Add code (optional)</button></div></div></div>
+
+            <div id="spam-answer-container">
+              <label for="spam_answer" id="spam_question">What color are baby ducklings? [answer is yellow]<span class="subtle" style="margin-left: 10px;">(spam prevention)</span></label>
+              <input type="text" name="spam_answer" id="spam_answer" maxlength="32" class="form-control">
+            </div>
+
+            <div id="ask-terms-container">
+              <button id="submitButton" class="pure-button pure-button-default">Submit</button>
+              <span id="agree-terms-container">
+                <input id="agreeToTerms" type="checkbox">
+                <span id="agreeText" class="agreeText">I agree to the <a href="https://simpletutorials.com/Home/Terms">Terms of Service</a></span>
+              </span>
+              <div id="ask-load-spinner"></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="ask-success-container" style="display: none">
+          <div id="successContainer" class="text1">
+            <span class="successBold">Success!</span>
+            <br><br>
+             We'll review your submission and post it to this page.
+
+            <div id="ask-tweet-container">
+              <span class="fa fa-twitter"></span><span id="ask-tweet-text">Share your discussion on Twitter!</span>
+              <textarea id="ask-tweet" class="form-control" rows="4"></textarea>
+              <button id="ask-tweet-submit" class="btn btn-warning btn-orange" type="button">
+              Tweet
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!--
+        <div id="commentPanel" class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">Comments</h3>
+          </div>
+          <div class="panel-body">
+          </div>
+        </div>
+        -->
+      </div>
+
+
+    </div>
+    <div class="col-lg-5 col-md-4" id="show-right">
+
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Most Popular</h3>
+        </div>
+        <div class="panel-body">
+          
+            <a class="show-summary-link" href="https://simpletutorials.com/c/1289/Simple+VIM+Reference">
+            Simple VIM Reference
+            </a>
+          
+            <a class="show-summary-link" href="https://simpletutorials.com/c/2512/STComboBox%3A+A+Lightweight+jQuery+Combo+Box">
+            STComboBox: A Lightweight jQuery Combo Box
+            </a>
+          
+            <a class="show-summary-link" href="https://simpletutorials.com/c/2758/How+to+Install+Spacemacs+on+Windows">
+            How to Install Spacemacs on Windows
+            </a>
+          
+            <a class="show-summary-link" href="https://simpletutorials.com/c/3022/Spacemacs+Tutorials">
+            Spacemacs Tutorials
+            </a>
+          
+            <a class="show-summary-link" href="https://simpletutorials.com/c/3036/Spacemacs+%28Vim+mode%29+Cheatsheet">
+            Spacemacs (Vim mode) Cheatsheet
+            </a>
+          
+            <a class="show-summary-link" href="https://simpletutorials.com/c/2075/How+to+Create+an+Executable+from+Python+3+Code+using+py2exe">
+            How to Create an Executable from Python 3 Code using py2exe
+            </a>
+          
+            <a class="show-summary-link" href="https://simpletutorials.com/c/2945/How+do+I+open+a+file+in+Spacemacs%3F">
+            How do I open a file in Spacemacs?
+            </a>
+          
+        </div>
+      </div>
+
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Stay Connected</h3>
+        </div>
+        <div class="panel-body">
+          <div id="lessonsEmail">
+            <div>
+              <form class="form-inline">
+                <div class="form-group">
+                  <input type="email" class="form-control" placeholder="Email address">
+                  <button class="btn btn-default btn-em">Submit</button>
+                </div>
+              </form>
+              <div style="margin-top: .7em;">
+                Be the first to find out about new articles, promotions, and exclusive lessons.
+              </div>
+            </div>
+            <div id="lessons-email-spinner"></div>
+            <div style="display: none;">
+              Success! We're cooking up an email for you right now.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Topics</h3>
+        </div>
+        <div class="panel-body">
+          <div class="topic-links-sidebar">
+            <a href="https://simpletutorials.com/c/2555/MVC+with+CherryPy+and+Jinja2+(updated)">CherryPy</a>
+            <a href="https://simpletutorials.com/c/2129/CEF+Tutorials">Chromium Embedded Framework</a>
+            <a href="https://simpletutorials.com/c/1855/CSS">CSS</a>
+            <a href="https://simpletutorials.com/c/1640/Git%3A+A+Quick+Intro+for+Programmers">Git</a>
+            <a href="https://simpletutorials.com/c/1854/HTML">HTML</a>
+            <a href="https://simpletutorials.com/c/1856/JavaScript">JavaScript</a>
+            <a href="https://simpletutorials.com/c/1798/Introduction+to+jQuery">jQuery</a>
+            <a href="https://simpletutorials.com/c/1661/Python+for+Beginners">Python</a>
+            <a href="https://simpletutorials.com/c/2883/Spacemacs">Spacemacs</a>
+            <a href="https://simpletutorials.com/c/2432/Introduction+to+VueJS+Events">VueJS</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Questions? Want to get in touch?</h3>
+        </div>
+        <div class="panel-body">
+          <a href="https://twitter.com/simptutorials" id="twitterlink" class="brandlink">
+            <span class="twittersm"></span>
+            <!--<div class="twittername">@simptutorials</div>-->
+          </a>
+          <a href="https://www.facebook.com/simptutorials" class="brandlink">
+            <span class="fbsm"></span>
+            <!--<div class="twittername">facebook.com/simptutorials</div>-->
+          </a>
+        </div>
+      </div>
+
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Recent Posts</h3>
+        </div>
+        <div class="panel-body">
+          
+            <a class="show-summary-link" href="https://simpletutorials.com/c/3054/VueJS">
+            VueJS
+            </a>
+          
+            <a class="show-summary-link" href="https://simpletutorials.com/c/3039/How+to+resolve+%26quot%3BUndeclared+variable+or+function+%26%23x27%3Bmodule%26%23x27%3B%26quot%3B+error+thrown+by+js2-mode+in+Spacemacs">
+            How to resolve "Undeclared variable or function 'module'" error thrown by js2-mode in Spacemacs
+            </a>
+          
+            <a class="show-summary-link" href="https://simpletutorials.com/c/3036/Spacemacs+%28Vim+mode%29+Cheatsheet">
+            Spacemacs (Vim mode) Cheatsheet
+            </a>
+          
+            <a class="show-summary-link" href="https://simpletutorials.com/c/3022/Spacemacs+Tutorials">
+            Spacemacs Tutorials
+            </a>
+          
+            <a class="show-summary-link" href="https://simpletutorials.com/c/3013/How+to+install+Exuberant+Ctags+on+Ubuntu+14">
+            How to install Exuberant Ctags on Ubuntu 14
+            </a>
+          
+            <a class="show-summary-link" href="https://simpletutorials.com/c/3011/How+to+edit+your+Projectile+projects+list+in+Spacemacs+on+Windows">
+            How to edit your Projectile projects list in Spacemacs on Windows
+            </a>
+          
+            <a class="show-summary-link" href="https://simpletutorials.com/c/3004/How+to+create+a+keyboard+shortcut+in+Spacemacs">
+            How to create a keyboard shortcut in Spacemacs
+            </a>
+          
+        </div>
+      </div>
+
+      <!--
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">We use Linode. Try 'em out.</h3>
+        </div>
+        <div class="panel-body" style="background-color: #2d3339">
+          <a href="https://www.linode.com/?r=7032dac2f64393a86da92dae3202f79956754458">
+            <img src="/static/images/linode-dark-sm.png" class="img-responsive">
+          </a>
+        </div>
+      </div>
+      -->
+    </div>
+  </div>
+</div>
+
+
+  <div id="contentTagsAdmin" style="display: none">
+    <input name="tags" id="tags">
+    <input type="button" id="tagsSubmitButton" value="Submit" class="button-secondary pure-button">
+  </div>
+
+  <div id="voteSuccessModal" style="display: none">
+    <div class="voteSuccessFadeText">Thank you.</div>
+    <div id="voteSuccessRemoveVote" class="voteSuccessFadeLink" style="display: none;">remove vote</div>
+  </div>
+
+  <div id="voteRemoveModal" style="display: none">
+    <div class="voteSuccessFadeText">Your vote has been removed.</div>
+  </div>
+
+
+
+<div id="bottomsection">
+  <div id="bottom">
+   <div id="bottomcontainer">
+    <ul id="menu_bottom" class="typeface-js">
+      <li>
+        <a id="menu_advertise" href="https://simpletutorials.com/Home/Advertise">Advertise with Us</a>
+      </li>
+      <li>
+        <a id="menu_contact" href="https://simpletutorials.com/Home/Contact">Contact</a>
+      </li>
+      <li>
+        <a id="menu_privacy" href="https://simpletutorials.com/Home/Terms">Terms of Use</a>
+      </li>
+    </ul>
+   </div>
+  </div>
+
+  <div id="bottomcopyright">
+   Design © 2015, Downranked, LLC., <br>
+   Original user code contributions under MIT License
+  </div>
+</div>
+
+<!--
+<div class="custom-wrapper pure-g" id="menu">
+    <div class="pure-u-1 pure-u-md-1-2">
+        <div class="pure-menu" id="customlogo" style="padding: 10px;">
+            <a href="/Home/Index" class="pure-menu-heading custom-brand"></a>
+            <a href="#" class="custom-toggle" id="toggle"><s class="bar"></s><s class="bar"></s></a>
+        </div>
+    </div>
+    <div class="pure-u-1 pure-u-lg-1-2">
+        <div class="pure-menu pure-menu-horizontal custom-menu-3 custom-can-transform">
+            <ul class="pure-menu-list">
+                
+                <li class="pure-menu-item"><a href="/User/Welcome" class="pure-menu-link">home</a></li>
+                <li class="pure-menu-item"><a href="/User/Index" class="pure-menu-link">posts</a></li>
+                <li class="pure-menu-item"><a href="/User/Account" class="pure-menu-link">profile</a></li>
+                <li class="pure-menu-item"><a href="/Home/Logout" class="pure-menu-link">logout</a></li>
+                
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+<script>
+(function (window, document) {
+var menu = document.getElementById('menu'),
+    WINDOW_CHANGE_EVENT = ('onorientationchange' in window) ? 'orientationchange':'resize';
+
+function toggleHorizontal() {
+    [].forEach.call(
+        document.getElementById('menu').querySelectorAll('.custom-can-transform'),
+        function(el){
+            el.classList.toggle('pure-menu-horizontal');
+        }
+    );
+};
+
+function toggleMenu() {
+    // set timeout so that the panel has a chance to roll up
+    // before the menu switches states
+    if (menu.classList.contains('open')) {
+        setTimeout(toggleHorizontal, 500);
+    }
+    else {
+        toggleHorizontal();
+    }
+    menu.classList.toggle('open');
+    document.getElementById('toggle').classList.toggle('x');
+};
+
+function closeMenu() {
+    if (menu.classList.contains('open')) {
+        toggleMenu();
+    }
+}
+
+document.getElementById('toggle').addEventListener('click', function (e) {
+    toggleMenu();
+});
+
+window.addEventListener(WINDOW_CHANGE_EVENT, closeMenu);
+})(this, this.document);
+
+</script>
+
+
+<div id="body">
+
+  <div id="middlesection">
+  </div>
+
+  <div id="bottomsection">
+    <div id="bottom">
+     <div id="bottomcontainer">
+      <ul id="menu_bottom" class="typeface-js">
+        <li>
+          <a id="menu_advertise" href="/Home/Advertise">Advertise with Us</a>
+        </li>
+        <li>
+          <a id="menu_contact" href="/Home/Contact">Contact</a>
+        </li>
+        <li>
+          <a id="menu_privacy" href="/Home/Terms">Terms of Use</a>
+        </li>
+      </ul>
+     </div>
+    </div>
+
+    <div id="bottomcopyright">
+     Design &copy; 2014, Downranked, LLC., <br>
+     Original user code contributions under MIT License
+    </div>
+  </div>
+
+</div>
+
+
+-->
+
+
+
+<audio controls="controls" style="display: none;"></audio><div style="position: static; width: 0px; height: 0px; border: none; padding: 0px; margin: 0px;"><div id="trans-tooltip"><div id="tip-left-top" style="background: url(&quot;chrome-extension://ikkbfngojljohpekonpldkamedehakni/imgs/map/tip-left-top.png&quot;);"></div><div id="tip-top" style="background: url(&quot;chrome-extension://ikkbfngojljohpekonpldkamedehakni/imgs/map/tip-top.png&quot;) repeat-x;"></div><div id="tip-right-top" style="background: url(&quot;chrome-extension://ikkbfngojljohpekonpldkamedehakni/imgs/map/tip-right-top.png&quot;);"></div><div id="tip-right" style="background: url(&quot;chrome-extension://ikkbfngojljohpekonpldkamedehakni/imgs/map/tip-right.png&quot;) repeat-y;"></div><div id="tip-right-bottom" style="background: url(&quot;chrome-extension://ikkbfngojljohpekonpldkamedehakni/imgs/map/tip-right-bottom.png&quot;);"></div><div id="tip-bottom" style="background: url(&quot;chrome-extension://ikkbfngojljohpekonpldkamedehakni/imgs/map/tip-bottom.png&quot;) repeat-x;"></div><div id="tip-left-bottom" style="background: url(&quot;chrome-extension://ikkbfngojljohpekonpldkamedehakni/imgs/map/tip-left-bottom.png&quot;);"></div><div id="tip-left" style="background: url(&quot;chrome-extension://ikkbfngojljohpekonpldkamedehakni/imgs/map/tip-left.png&quot;);"></div><div id="trans-content"></div></div><div id="tip-arrow-bottom" style="background: url(&quot;chrome-extension://ikkbfngojljohpekonpldkamedehakni/imgs/map/tip-arrow-bottom.png&quot;);"></div><div id="tip-arrow-top" style="background: url(&quot;chrome-extension://ikkbfngojljohpekonpldkamedehakni/imgs/map/tip-arrow-top.png&quot;);"></div></div><div></div><div id="GoogleTranslateExDiv" style="display: none;"></div><script aria-hidden="true" type="application/x-lastpass" id="hiddenlpsubmitdiv" style="display: none;"></script><script>try{(function() { for(var lastpass_iter=0; lastpass_iter < document.forms.length; lastpass_iter++){ var lastpass_f = document.forms[lastpass_iter]; if(typeof(lastpass_f.lpsubmitorig2)=="undefined"){ lastpass_f.lpsubmitorig2 = lastpass_f.submit; if (typeof(lastpass_f.lpsubmitorig2)=='object'){ continue;}lastpass_f.submit = function(){ var form=this; var customEvent = document.createEvent("Event"); customEvent.initEvent("lpCustomEvent", true, true); var d = document.getElementById("hiddenlpsubmitdiv"); if (d) {for(var i = 0; i < document.forms.length; i++){ if(document.forms[i]==form){ if (typeof(d.innerText) != 'undefined') { d.innerText=i.toString(); } else { d.textContent=i.toString(); } } } d.dispatchEvent(customEvent); }form.lpsubmitorig2(); } } }})()}catch(e){}</script><st-div id="__selection-translator__"> <st-div class="__st-box__" style="display: none; position: fixed; z-index: 99999; left: 0px; top: 0px; transform: translateX(63px) translateY(108px);"> <st-header> <st-span class="st-icon-pin" title="固定"></st-span> <st-span class="st-icon-down-open" title="展开"></st-span> <st-span class="st-icon-cog" title="设置"></st-span> </st-header> <st-div class="__query-form__" style="display: none;"> <st-div> <textarea placeholder="输入要翻译的句子或单词"></textarea> </st-div> <st-div> <select> <option value="">自动判断</option> <option value="zh">中文</option><option value="zh-CN">中文(简体)</option><option value="zh-HK">中文(香港)</option><option value="zh-TW">中文(繁体)</option><option value="en">英语</option><option value="ja">日语</option><option value="ko">朝鲜语</option><option value="de">德语</option><option value="fr">法语</option><option value="ru">俄语</option><option value="th">泰语</option><option value="af">南非语</option><option value="ar">阿拉伯语</option><option value="az">阿塞拜疆语</option><option value="be">比利时语</option><option value="bg">保加利亚语</option><option value="ca">加泰隆语</option><option value="cs">捷克语</option><option value="cy">威尔士语</option><option value="da">丹麦语</option><option value="dv">第维埃语</option><option value="el">希腊语</option><option value="eo">世界语</option><option value="es">西班牙语</option><option value="et">爱沙尼亚语</option><option value="eu">巴士克语</option><option value="fa">法斯语</option><option value="fi">芬兰语</option><option value="fo">法罗语</option><option value="gl">加里西亚语</option><option value="gu">古吉拉特语</option><option value="he">希伯来语</option><option value="hi">印地语</option><option value="hr">克罗地亚语</option><option value="hu">匈牙利语</option><option value="hy">亚美尼亚语</option><option value="id">印度尼西亚语</option><option value="is">冰岛语</option><option value="it">意大利语</option><option value="ka">格鲁吉亚语</option><option value="kk">哈萨克语</option><option value="kn">卡纳拉语</option><option value="kok">孔卡尼语</option><option value="ky">吉尔吉斯语</option><option value="lt">立陶宛语</option><option value="lv">拉脱维亚语</option><option value="mi">毛利语</option><option value="mk">马其顿语</option><option value="mn">蒙古语</option><option value="mr">马拉地语</option><option value="ms">马来语</option><option value="mt">马耳他语</option><option value="nb">挪威语(伯克梅尔)</option><option value="nl">荷兰语</option><option value="ns">北梭托语</option><option value="pa">旁遮普语</option><option value="pl">波兰语</option><option value="pt">葡萄牙语</option><option value="qu">克丘亚语</option><option value="ro">罗马尼亚语</option><option value="sa">梵文</option><option value="se">北萨摩斯语</option><option value="sk">斯洛伐克语</option><option value="sl">斯洛文尼亚语</option><option value="sq">阿尔巴尼亚语</option><option value="sv">瑞典语</option><option value="sw">斯瓦希里语</option><option value="syr">叙利亚语</option><option value="ta">泰米尔语</option><option value="te">泰卢固语</option><option value="tl">塔加路语</option><option value="tn">茨瓦纳语</option><option value="tr">土耳其语</option><option value="ts">宗加语</option><option value="tt">鞑靼语</option><option value="uk">乌克兰语</option><option value="ur">乌都语</option><option value="uz">乌兹别克语</option><option value="vi">越南语</option><option value="xh">班图语</option><option value="zu">祖鲁语</option> </select> <st-div class="__exchange__"> <st-span class="st-icon-exchange"></st-span> </st-div> <select> <option value="">自动选择</option> <option value="zh">中文</option><option value="zh-CN">中文(简体)</option><option value="zh-HK">中文(香港)</option><option value="zh-TW">中文(繁体)</option><option value="en">英语</option><option value="ja">日语</option><option value="ko">朝鲜语</option><option value="de">德语</option><option value="fr">法语</option><option value="ru">俄语</option><option value="th">泰语</option><option value="af">南非语</option><option value="ar">阿拉伯语</option><option value="az">阿塞拜疆语</option><option value="be">比利时语</option><option value="bg">保加利亚语</option><option value="ca">加泰隆语</option><option value="cs">捷克语</option><option value="cy">威尔士语</option><option value="da">丹麦语</option><option value="dv">第维埃语</option><option value="el">希腊语</option><option value="eo">世界语</option><option value="es">西班牙语</option><option value="et">爱沙尼亚语</option><option value="eu">巴士克语</option><option value="fa">法斯语</option><option value="fi">芬兰语</option><option value="fo">法罗语</option><option value="gl">加里西亚语</option><option value="gu">古吉拉特语</option><option value="he">希伯来语</option><option value="hi">印地语</option><option value="hr">克罗地亚语</option><option value="hu">匈牙利语</option><option value="hy">亚美尼亚语</option><option value="id">印度尼西亚语</option><option value="is">冰岛语</option><option value="it">意大利语</option><option value="ka">格鲁吉亚语</option><option value="kk">哈萨克语</option><option value="kn">卡纳拉语</option><option value="kok">孔卡尼语</option><option value="ky">吉尔吉斯语</option><option value="lt">立陶宛语</option><option value="lv">拉脱维亚语</option><option value="mi">毛利语</option><option value="mk">马其顿语</option><option value="mn">蒙古语</option><option value="mr">马拉地语</option><option value="ms">马来语</option><option value="mt">马耳他语</option><option value="nb">挪威语(伯克梅尔)</option><option value="nl">荷兰语</option><option value="ns">北梭托语</option><option value="pa">旁遮普语</option><option value="pl">波兰语</option><option value="pt">葡萄牙语</option><option value="qu">克丘亚语</option><option value="ro">罗马尼亚语</option><option value="sa">梵文</option><option value="se">北萨摩斯语</option><option value="sk">斯洛伐克语</option><option value="sl">斯洛文尼亚语</option><option value="sq">阿尔巴尼亚语</option><option value="sv">瑞典语</option><option value="sw">斯瓦希里语</option><option value="syr">叙利亚语</option><option value="ta">泰米尔语</option><option value="te">泰卢固语</option><option value="tl">塔加路语</option><option value="tn">茨瓦纳语</option><option value="tr">土耳其语</option><option value="ts">宗加语</option><option value="tt">鞑靼语</option><option value="uk">乌克兰语</option><option value="ur">乌都语</option><option value="uz">乌兹别克语</option><option value="vi">越南语</option><option value="xh">班图语</option><option value="zu">祖鲁语</option> </select> </st-div> <st-div> <select> <option value="YouDao">有道翻译</option> <option value="BaiDu">百度翻译</option> <option value="Bing">必应翻译</option> <option value="Google">谷歌翻译</option> <option value="GoogleCN">谷歌翻译（国内）</option> </select> <st-div class="__action-list__"> <st-div class="__button__ __btn-translate__">翻译 <st-span class="st-icon-down-dir"></st-span> </st-div> <st-div class="__expand__"> <st-div class="__button__">朗读</st-div> <st-div class="__button__">复制</st-div> </st-div> </st-div> </st-div> </st-div> <st-div class="__translate-result__" style="display: none;">正在查询，请稍候……</st-div> <st-div class="__translate-result__"> <st-div style="display: none;"> <st-span></st-span> <st-span class="__retry__">重试</st-span> </st-div> <st-div> <st-div class="__phonetic__"> <st-span style="display: none;"></st-span> <st-span class="__copy-and-read__"> <st-span>朗读</st-span> <st-span style="display: none;">复制</st-span> </st-span> </st-div> <st-div style="display: none;"> <st-ul>  </st-ul> <st-div class="__copy-and-read__"> <st-span class="__copy-and-read__">复制</st-span> </st-div> </st-div> <st-div style="display: none;">  <st-div class="__copy-and-read__"> <st-span class="__copy-and-read__">朗读</st-span> <st-span class="__copy-and-read__">复制</st-span> </st-div> </st-div> </st-div> </st-div> <st-footer> <st-span style="display: none;">via <a target="_blank" href="https://simpletutorials.com/c/2262/What+are+the+basic+pieces+of+a+web+page%3F"></a></st-span> </st-footer> </st-div> <st-div class="__st-btn__" style="display: block; position: fixed; z-index: 99999; left: 0px; top: 0px; transform: translateX(63px) translateY(108px);">译</st-div> </st-div><div id="fanyiWrapper" style="height: 32px; width: 33px; font-family: 微软雅黑; font-size: 14px; text-align: center; line-height: 32px; color: rgb(255, 255, 255); background-color: rgb(67, 149, 255); border-radius: 2px; cursor: pointer; z-index: 99999; left: 63px; top: 208px; position: absolute;">译</div></body><style type="text/css">#yddContainer{display:block;font-family:Microsoft YaHei;position:relative;width:100%;height:100%;top:-4px;left:-4px;font-size:12px;border:1px solid}#yddTop{display:block;height:22px}#yddTopBorderlr{display:block;position:static;height:17px;padding:2px 28px;line-height:17px;font-size:12px;color:#5079bb;font-weight:bold;border-style:none solid;border-width:1px}#yddTopBorderlr .ydd-sp{position:absolute;top:2px;height:0;overflow:hidden}.ydd-icon{left:5px;width:17px;padding:0px 0px 0px 0px;padding-top:17px;background-position:-16px -44px}.ydd-close{right:5px;width:16px;padding-top:16px;background-position:left -44px}#yddKeyTitle{float:left;text-decoration:none}#yddMiddle{display:block;margin-bottom:10px}.ydd-tabs{display:block;margin:5px 0;padding:0 5px;height:18px;border-bottom:1px solid}.ydd-tab{display:block;float:left;height:18px;margin:0 5px -1px 0;padding:0 4px;line-height:18px;border:1px solid;border-bottom:none}.ydd-trans-container{display:block;line-height:160%}.ydd-trans-container a{text-decoration:none;}#yddBottom{position:absolute;bottom:0;left:0;width:100%;height:22px;line-height:22px;overflow:hidden;background-position:left -22px}.ydd-padding010{padding:0 10px}#yddWrapper{color:#252525;z-index:10001;background:url(chrome-extension://eopjamdnofihpioajgfdikhhbobonhbb/ab20.png);}#yddContainer{background:#fff;border-color:#4b7598}#yddTopBorderlr{border-color:#f0f8fc}#yddWrapper .ydd-sp{background-image:url(chrome-extension://eopjamdnofihpioajgfdikhhbobonhbb/ydd-sprite.png)}#yddWrapper a,#yddWrapper a:hover,#yddWrapper a:visited{color:#50799b}#yddWrapper .ydd-tabs{color:#959595}.ydd-tabs,.ydd-tab{background:#fff;border-color:#d5e7f3}#yddBottom{color:#363636}#yddWrapper{min-width:250px;max-width:400px;}</style></html>

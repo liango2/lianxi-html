@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=" utf-8">
+    <title>DIV CSS遮罩层</title>
+    <script language="javascript" type="text/javascript">
+        function showdiv() {
+            document.getElementById("bg").style.display = "block";
+            document.getElementById("show").style.display = "block";
+        }
+        function hidediv() {
+            document.getElementById("bg").style.display = 'none';
+            document.getElementById("show").style.display = 'none';
+        }
+    </script>
+    <style type="text/css">
+        #bg {
+            display: none;
+            position: absolute;
+            top: 0%;
+            left: 0%;
+            width: 100%;
+            height: 100%;
+            background-color: black;
+            z-index: 1001;
+            -moz-opacity: 0.7;
+            opacity: .70;
+            filter: alpha(opacity=70);
+        }
+
+        #show {
+            display: none;
+            position: relative;/*absolute;*/
+            top: 25%;
+            left: 22%;
+            width: 53%;
+            height: 49%;
+            padding: 8px;
+            border: 8px solid #E8E9F7;
+            background-color: white;
+            z-index: 1002;
+            overflow: auto;
+        }
+    </style>
+</head>
+<body>
+
+
+<p>
+    参考了： JS+CSS简单实现DIV遮罩层显示隐藏
+    http://www.cnblogs.com/aspx-net/archive/2011/03/11/1981071.html
+
+    css div实现的遮罩层完美兼容IE6-IE9 FireFox_Div+CSS教程_CSS_网页制作_脚本之家
+    http://www.jb51.net/css/109697.html
+</p>
+<div>
+    hello,world<br>
+    hello,world<br>
+    hello,world<br>
+    hello,world<br>
+    hello,world<br>
+</div>
+
+
+    <div style="position: relative">
+        <br>div start<br>
+        <input id="btnshow" type="button" value="Show" onclick="showdiv();"/>
+
+        <div id="bg"></div>
+        <div id="show">测试 <input id="btnclose" type="button" value="Close" onclick="hidediv();"/></div>
+        <br>div end<br>
+    </div>
+
+<div>
+    hello,world<br>
+    hello,world<br>
+    hello,world<br>
+    hello,world<br>
+    hello,world<br>
+    hello,world<br>
+    hello,world<br>
+    hello,world<br>
+    hello,world<br>
+    hello,world<br>
+    hello,world<br>
+    hello,world<br>
+    hello,world<br>
+    hello,world<br>
+    hello,world<br>
+    hello,world<br>
+    hello,world<br>
+    hello,world<br>
+    hello,world<br>
+    hello,world<br>
+    hello,world<br>
+    hello,world<br>
+    hello,world<br>
+    hello,world<br>
+    hello,world<br>
+    hello,world<br>
+    hello,world<br>
+    hello,world<br>
+</div>
+</body>
+</html>

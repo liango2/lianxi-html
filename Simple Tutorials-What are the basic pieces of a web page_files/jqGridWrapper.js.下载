@@ -1,0 +1,237 @@
+
+
+
+//beforeProcessing(data, status, xhr)
+
+
+function jqGridHelper() {}
+
+jqGridHelper.prototype.Init = function(id, options) {
+    this.id = id;
+    this.selectors = {
+        grid: '#' + id,
+        pager: '#' + id + 'Pager'
+    };
+
+    var defaults = {
+        datatype: "json",
+        height: 400,
+        mtype: 'POST',
+        rowList:[10, 20, 50, 100],
+        rowNum:10,
+        viewrecords: true
+    };
+
+    if(typeof options.multiselect != 'undefined') {
+        options.beforeSelectRow = function (rowid, e) {
+            var $this = $(this), rows = this.rows,
+                // get id of the previous selected row
+                startId = $this.jqGrid('getGridParam', 'selrow'),
+                startRow, endRow, iStart, iEnd, i, rowidIndex;
+
+            if (!e.ctrlKey && !e.shiftKey) {
+                //$this.jqGrid('resetSelection');
+            } else if (startId && e.shiftKey) {
+                $this.jqGrid('resetSelection');
+
+                // get DOM elements of the previous selected and the currect selected rows
+                startRow = rows.namedItem(startId);
+                endRow = rows.namedItem(rowid);
+                if (startRow && endRow) {
+                    // get min and max from the indexes of the previous selected
+                    // and the currect selected rows
+                    iStart = Math.min(startRow.rowIndex, endRow.rowIndex);
+                    rowidIndex = endRow.rowIndex;
+                    iEnd = Math.max(startRow.rowIndex, rowidIndex);
+                    for (i = iStart; i <= iEnd; i++) {
+                        // the row with rowid will be selected by jqGrid, so:
+                        if (i != rowidIndex) {
+                            $this.jqGrid('setSelection', rows[i].id, false);
+                        }
+                    }
+                }
+
+                // clear text selection
+                if(document.selection && document.selection.empty) {
+                    document.selection.empty();
+                } else if(window.getSelection) {
+                    window.getSelection().removeAllRanges();
+                }
+            }
+            return true;
+        }
+    }
+
+    if(typeof options.colNames == 'undefined') {
+        defaults.colNames = [];
+
+        for(var i=0; i < options.colModel; i++) {
+            defaults.colNames.push(options.colModel[i].label);
+        }
+    }
+
+    if(typeof options.width == 'undefined') {
+        options.width = 0;
+        for(var i=0; i < options.colModel.length; i++) {
+            if(!options.colModel[i].hidden) {
+                options.width += options.colModel[i].width;
+            }
+        }
+    }
+
+    var self = this;
+    var beforeProcessing = options.beforeProcessing;
+
+    options.beforeProcessing = function(data, status, xhr) {
+        self._data = data;
+
+        if(beforeProcessing) {
+            beforeProcessing(data, status, xhr);
+        }
+    };
+
+    var options =  $.extend(defaults, options);
+
+    options.pager = this.selectors.pager;
+    $(this.selectors.grid)
+        .jqGrid(options)
+        .jqGrid('navGrid', this.selectors.pager, {edit:false, add:false, del:false})
+}
+
+jqGridHelper.prototype.AddButton = function(options) {
+    $(this.selectors.grid).navButtonAdd(this.selectors.pager, options);
+}
+
+jqGridHelper.prototype.GetRows = function() {
+    return this._data.rows;
+}
+
+jqGridHelper.prototype.GetSelectedRow = function() {
+    var rowId = $(this.selectors.grid).jqGrid('getGridParam', 'selrow');
+
+    if(rowId == null) {
+        return rowId;
+    }
+
+    return $(this.selectors.grid).getRowData(rowId);
+}
+
+jqGridHelper.prototype.GetSelectedRowData = function() {
+    var rowId = $(this.selectors.grid).jqGrid('getGridParam', 'selrow');
+
+    if(rowId == null) {
+        return rowId;
+    }
+
+    var rowNum = $(this.selectors.grid).jqGrid('getInd', rowId);
+    return this._data.rows[rowNum-1]; //row number is not zero-based
+}
+
+
+jqGridHelper.prototype.Reload = function() {
+    $(this.selectors.grid).trigger("reloadGrid");
+}
+
+/*
+(function( $ ){
+
+    var methods = {
+        init : function( options ) {
+            var defaults = {
+                datatype: "json",
+                height: 400,
+                mtype: 'POST',
+                rowList:[10, 20, 50, 100],
+                rowNum:10,
+                viewrecords: true
+            };
+
+            var that = this;
+            if(typeof options.multiselect != 'undefined') {
+                options.beforeSelectRow = function (rowid, e) {
+                    var $this = $(this), rows = this.rows,
+                        // get id of the previous selected row
+                        startId = $this.jqGrid('getGridParam', 'selrow'),
+                        startRow, endRow, iStart, iEnd, i, rowidIndex;
+
+                    if (!e.ctrlKey && !e.shiftKey) {
+                        //$this.jqGrid('resetSelection');
+                    } else if (startId && e.shiftKey) {
+                        $this.jqGrid('resetSelection');
+
+                        // get DOM elements of the previous selected and the currect selected rows
+                        startRow = rows.namedItem(startId);
+                        endRow = rows.namedItem(rowid);
+                        if (startRow && endRow) {
+                            // get min and max from the indexes of the previous selected
+                            // and the currect selected rows
+                            iStart = Math.min(startRow.rowIndex, endRow.rowIndex);
+                            rowidIndex = endRow.rowIndex;
+                            iEnd = Math.max(startRow.rowIndex, rowidIndex);
+                            for (i = iStart; i <= iEnd; i++) {
+                                // the row with rowid will be selected by jqGrid, so:
+                                if (i != rowidIndex) {
+                                    $this.jqGrid('setSelection', rows[i].id, false);
+                                }
+                            }
+                        }
+
+                        // clear text selection
+                        if(document.selection && document.selection.empty) {
+                            document.selection.empty();
+                        } else if(window.getSelection) {
+                            window.getSelection().removeAllRanges();
+                        }
+                    }
+                    return true;
+                }
+            }
+
+            if(typeof options.colNames == 'undefined') {
+                defaults.colNames = [];
+
+                for(var i=0; i < options.colModel; i++) {
+                    defaults.colNames.push(options.colModel[i].label);
+                }
+            }
+
+            if(typeof options.width == 'undefined') {
+                options.width = 0;
+                for(var i=0; i < options.colModel.length; i++) {
+                    options.width += options.colModel[i].width;
+                }
+            }
+
+            var options =  $.extend(defaults, options);
+
+            return this.each(function(){
+                var $this = $(this);
+                options.pager = '#' + this.id + 'Pager';
+                $this.jqGrid(options);
+            });
+        },
+        addData : function( ) {  },
+        getSelectedRowId : function() {
+            return $(this).jqGrid('getGridParam', 'selrow');
+        },
+        getSelectedRowIds : function() {
+            return $(this).jqGrid('getGridParam','selarrrow');
+        },
+        getSelectedRowData: function(rowId) {
+            return $(this).getRowData(rowId);
+        }
+    };
+
+    $.fn.jqGridWrapper = function( method ) {
+
+        if ( methods[method] ) {
+            return methods[method].apply( this, Array.prototype.slice.call( arguments, 1 ));
+        } else if ( typeof method === 'object' || ! method ) {
+            return methods.init.apply( this, arguments );
+        } else {
+            $.error( 'Method ' +  method + ' does not exist on jQuery.jqGridWrapper' );
+        }
+    };
+
+})( jQuery );
+*/
